@@ -6,3 +6,9 @@ coverage/
 *.log
 .env*
 !.env.example
+
+# Firebase & Cloud Credentials
+*firebase*credentials*.json
+*.key
+*.pem
+*.secret
