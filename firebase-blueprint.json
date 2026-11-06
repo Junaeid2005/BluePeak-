@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "inquiry": {
+      "title": "Inquiry",
+      "description": "Client contact inquiry and project request submitted via the BluePeak website",
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Full name of the client",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "description": "Email address of the client",
+          "maxLength": 120
+        },
+        "company": {
+          "type": "string",
+          "description": "Optional company name",
+          "maxLength": 120
+        },
+        "service": {
+          "type": "string",
+          "description": "Primary service interested in",
+          "maxLength": 80
+        },
+        "budget": {
+          "type": "string",
+          "description": "Optional project budget range",
+          "maxLength": 60
+        },
+        "message": {
+          "type": "string",
+          "description": "Detailed inquiry message",
+          "maxLength": 2000
+        },
+        "status": {
+          "type": "string",
+          "description": "Inquiry workflow status",
+          "enum": ["new", "in_review", "contacted", "completed"]
+        },
+        "userId": {
+          "type": "string",
+          "description": "Authenticated user UID if signed in",
+          "maxLength": 128
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Timestamp when inquiry was created"
+        }
+      },
+      "required": ["name", "email", "service", "message", "status"]
+    }
+  },
+  "firestore": {
+    "/inquiries/{inquiryId}": {
+      "schema": "inquiry",
+      "description": "Collection of incoming client inquiries"
+    }
+  }
+}

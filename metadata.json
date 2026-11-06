@@ -1,0 +1,8 @@
+{
+  "name": "BluePeak | Digital Agency",
+  "description": "BluePeak provides professional website development, SEO, social media marketing, graphic design, and digital solutions to help businesses grow.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
