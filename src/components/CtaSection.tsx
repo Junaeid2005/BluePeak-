@@ -7,7 +7,7 @@ interface CtaSectionProps {
 
 export const CtaSection: React.FC<CtaSectionProps> = ({ onStartProject }) => {
   return (
-    <section className="relative py-20 overflow-hidden bg-gradient-to-br from-[#710193] via-[#5c0177] to-[#4B0065] text-white">
+    <section className="relative py-20 overflow-hidden bg-gradient-to-br from-[#710193] via-[#5c0177] to-[#4B0065] dark:from-[#550170] dark:via-[#3E0152] dark:to-[#250033] text-white transition-colors duration-300">
       {/* Subtle geometric pattern overlay */}
       <div className="absolute inset-0 opacity-10 pointer-events-none">
         <svg

@@ -30,19 +30,18 @@ export const WhyUs: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-white relative">
+    <section className="py-24 bg-white dark:bg-[#0C0910] relative transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#F3EAF7] text-[#710193] text-xs font-bold uppercase tracking-wider mb-4">
-            <Award className="w-3.5 h-3.5" />
-            <span>The BluePeak Advantage</span>
+          <div className="text-xs font-semibold uppercase tracking-widest text-[#710193] dark:text-[#E2A6F7] mb-3">
+            The BluePeak Advantage &bull; Value Proposition
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-extrabold text-[#1D1722] tracking-tight mb-5">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-extrabold text-[#1D1722] dark:text-white tracking-tight mb-5">
             Why Businesses Choose BluePeak
           </h2>
-          <div className="w-16 h-1 bg-[#710193] mx-auto rounded-full mb-6" />
-          <p className="text-base sm:text-lg md:text-xl text-[#706778] leading-relaxed">
+          <div className="w-12 h-0.5 bg-[#710193] dark:bg-[#9E24C7] mx-auto mb-6 opacity-80" />
+          <p className="text-base sm:text-lg md:text-xl text-[#706778] dark:text-[#A69CB0] leading-relaxed">
             We combine creativity, technology, and a business-focused approach
             to deliver digital solutions that matter.
           </p>
@@ -55,22 +54,22 @@ export const WhyUs: React.FC = () => {
             return (
               <div
                 key={item.id}
-                className="group relative bg-[#FAF8FC] hover:bg-white rounded-2xl p-8 border border-[#F3EAF7] hover:border-[#710193]/30 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 transition-all duration-300"
+                className="group relative bg-[#FAF8FC] dark:bg-[#16111D] hover:bg-white dark:hover:bg-[#1D1627] rounded-2xl p-8 border border-[#F3EAF7] dark:border-[#261D2E] hover:border-[#710193]/30 dark:hover:border-[#9E24C7]/40 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 dark:hover:shadow-[#710193]/15 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-white border border-[#F3EAF7] flex items-center justify-center text-[#710193] group-hover:bg-[#710193] group-hover:text-white transition-all duration-300 shadow-xs">
+                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#20172B] border border-[#F3EAF7] dark:border-[#2E2338] flex items-center justify-center text-[#710193] dark:text-[#E2A6F7] group-hover:bg-[#710193] group-hover:text-white transition-all duration-300 shadow-xs">
                     <Icon className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-bold text-[#710193]/60">
+                  <span className="text-xs font-bold font-mono text-[#710193]/60 dark:text-[#E2A6F7]/60">
                     0{item.id}
                   </span>
                 </div>
 
-                <h3 className="text-xl font-heading font-bold text-[#1D1722] mb-3 group-hover:text-[#710193] transition-colors">
+                <h3 className="text-xl font-heading font-bold text-[#1D1722] dark:text-white mb-3 group-hover:text-[#710193] dark:group-hover:text-[#C553ED] transition-colors">
                   {item.title}
                 </h3>
 
-                <p className="text-sm sm:text-base text-[#706778] leading-relaxed">
+                <p className="text-sm sm:text-base text-[#706778] dark:text-[#A69CB0] leading-relaxed">
                   {item.description}
                 </p>
               </div>

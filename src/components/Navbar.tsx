@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Logo } from './Logo';
-import { Menu, X, ArrowUpRight, User, ShieldCheck } from 'lucide-react';
+import { Menu, X, ArrowUpRight, User, ShieldCheck, Sun, Moon } from 'lucide-react';
 import type { User as FirebaseUser } from 'firebase/auth';
 import { isUserAdmin } from '../lib/firebase';
 
@@ -8,12 +8,16 @@ interface NavbarProps {
   currentUser: FirebaseUser | null;
   onOpenAuthPortal: () => void;
   onOpenContact: () => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   onOpenAuthPortal,
   onOpenContact,
+  theme,
+  onToggleTheme,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -44,12 +48,13 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   const isAdmin = isUserAdmin(currentUser);
+  const isDark = theme === 'dark';
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
         isScrolled
-          ? 'bg-white/90 backdrop-blur-md shadow-sm border-b border-[#F3EAF7] py-3.5'
+          ? 'bg-white/90 dark:bg-[#0C0910]/90 backdrop-blur-md shadow-sm border-b border-[#F3EAF7] dark:border-[#261D2E] py-3.5'
           : 'bg-transparent py-5'
       }`}
     >
@@ -69,7 +74,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           </a>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2 bg-white/70 backdrop-blur-sm px-4 py-1.5 rounded-full border border-[#F3EAF7] shadow-xs">
+          <nav className="hidden md:flex items-center gap-1 lg:gap-2 bg-white/70 dark:bg-[#16111D]/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-[#F3EAF7] dark:border-[#2E2338] shadow-xs">
             {navLinks.map((link) => (
               <a
                 key={link.label}
@@ -78,7 +83,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                   e.preventDefault();
                   handleLinkClick(link.href);
                 }}
-                className="px-3.5 py-1.5 text-sm font-medium text-[#706778] hover:text-[#710193] transition-colors rounded-full hover:bg-[#F3EAF7]/60"
+                className="px-3.5 py-1.5 text-sm font-medium text-[#706778] dark:text-[#A69CB0] hover:text-[#710193] dark:hover:text-white transition-colors rounded-full hover:bg-[#F3EAF7]/60 dark:hover:bg-[#251A30]"
               >
                 {link.label}
               </a>
@@ -86,14 +91,28 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           {/* Right Action Buttons */}
-          <div className="hidden sm:flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-2.5">
+            {/* Theme Toggle (Black / White) */}
+            <button
+              onClick={onToggleTheme}
+              className="p-2 rounded-full border border-gray-200 dark:border-[#2E2338] bg-white dark:bg-[#16111D] text-[#706778] dark:text-[#A69CB0] hover:text-[#710193] dark:hover:text-white hover:border-[#710193] dark:hover:border-[#9E24C7] transition-all shadow-xs"
+              title={isDark ? 'Switch to White Theme' : 'Switch to Black Theme'}
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <Sun className="w-4 h-4 text-amber-400" />
+              ) : (
+                <Moon className="w-4 h-4 text-[#710193]" />
+              )}
+            </button>
+
             {/* Auth / Client Portal button */}
             <button
               onClick={onOpenAuthPortal}
               className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-full border transition-all ${
                 currentUser
-                  ? 'bg-[#F3EAF7] text-[#710193] border-[#710193]/30 hover:bg-[#710193] hover:text-white'
-                  : 'bg-white text-[#706778] border-gray-200 hover:border-[#710193] hover:text-[#710193]'
+                  ? 'bg-[#F3EAF7] dark:bg-[#291636] text-[#710193] dark:text-[#E2A6F7] border-[#710193]/30 dark:border-[#710193]/50 hover:bg-[#710193] hover:text-white'
+                  : 'bg-white dark:bg-[#16111D] text-[#706778] dark:text-[#A69CB0] border-gray-200 dark:border-[#2E2338] hover:border-[#710193] dark:hover:border-[#9E24C7] hover:text-[#710193] dark:hover:text-white'
               }`}
               title={currentUser ? `Signed in as ${currentUser.email}` : 'Client & Admin Portal'}
             >
@@ -104,9 +123,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                   className="w-5 h-5 rounded-full object-cover"
                 />
               ) : isAdmin ? (
-                <ShieldCheck className="w-4 h-4 text-[#710193]" />
+                <ShieldCheck className="w-4 h-4 text-[#710193] dark:text-[#C553ED]" />
               ) : (
-                <User className="w-4 h-4 text-[#706778]" />
+                <User className="w-4 h-4 text-[#706778] dark:text-[#A69CB0]" />
               )}
               <span>
                 {currentUser
@@ -120,18 +139,26 @@ export const Navbar: React.FC<NavbarProps> = ({
             {/* Let's Talk CTA */}
             <button
               onClick={onOpenContact}
-              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full bg-[#710193] text-white shadow-md shadow-[#710193]/20 hover:bg-[#4B0065] transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#710193] focus:ring-offset-2"
+              className="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold rounded-full bg-[#710193] text-white shadow-md shadow-[#710193]/20 hover:bg-[#4B0065] dark:hover:bg-[#8602AE] transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-[#710193] focus:ring-offset-2"
             >
               <span>Let's Talk</span>
               <ArrowUpRight className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Mobile Hamburger Button */}
+          {/* Mobile Right Controls */}
           <div className="flex items-center gap-2 sm:hidden">
             <button
+              onClick={onToggleTheme}
+              className="p-2 text-xs font-semibold text-[#706778] dark:text-[#A69CB0] bg-white dark:bg-[#16111D] border border-gray-200 dark:border-[#2E2338] rounded-full"
+              aria-label="Toggle theme"
+            >
+              {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#710193]" />}
+            </button>
+
+            <button
               onClick={onOpenAuthPortal}
-              className="p-2 text-xs font-semibold text-[#710193] bg-[#F3EAF7] rounded-full"
+              className="p-2 text-xs font-semibold text-[#710193] dark:text-[#C553ED] bg-[#F3EAF7] dark:bg-[#251633] rounded-full"
               aria-label="User Portal"
             >
               <User className="w-4 h-4" />
@@ -139,7 +166,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-[#1D1722] hover:bg-[#F3EAF7] transition-colors focus:outline-none focus:ring-2 focus:ring-[#710193]"
+              className="p-2 rounded-xl text-[#1D1722] dark:text-white hover:bg-[#F3EAF7] dark:hover:bg-[#251A30] transition-colors focus:outline-none focus:ring-2 focus:ring-[#710193]"
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >
@@ -151,7 +178,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Mobile Menu Dropdown */}
       {mobileMenuOpen && (
-        <div className="sm:hidden bg-white border-b border-[#F3EAF7] shadow-xl px-5 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200">
+        <div className="sm:hidden bg-white dark:bg-[#120E18] border-b border-[#F3EAF7] dark:border-[#261D2E] shadow-xl px-5 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200">
           <nav className="flex flex-col gap-1 mb-5">
             {navLinks.map((link) => (
               <a
@@ -161,20 +188,20 @@ export const Navbar: React.FC<NavbarProps> = ({
                   e.preventDefault();
                   handleLinkClick(link.href);
                 }}
-                className="px-4 py-2.5 text-base font-medium text-[#1D1722] hover:text-[#710193] hover:bg-[#F3EAF7] rounded-lg transition-colors"
+                className="px-4 py-2.5 text-base font-medium text-[#1D1722] dark:text-white hover:text-[#710193] dark:hover:text-[#C553ED] hover:bg-[#F3EAF7] dark:hover:bg-[#20172B] rounded-lg transition-colors"
               >
                 {link.label}
               </a>
             ))}
           </nav>
 
-          <div className="flex flex-col gap-2.5 pt-3 border-t border-gray-100">
+          <div className="flex flex-col gap-2.5 pt-3 border-t border-gray-100 dark:border-[#261D2E]">
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
                 onOpenAuthPortal();
               }}
-              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-semibold text-[#710193] bg-[#F3EAF7] rounded-xl hover:bg-[#710193] hover:text-white transition-colors"
+              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-semibold text-[#710193] dark:text-[#E2A6F7] bg-[#F3EAF7] dark:bg-[#251633] rounded-xl hover:bg-[#710193] hover:text-white transition-colors"
             >
               <User className="w-4 h-4" />
               <span>

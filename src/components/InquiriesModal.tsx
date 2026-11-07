@@ -4,7 +4,6 @@ import {
   User,
   LogOut,
   ShieldCheck,
-  Clock,
   Mail,
   Building,
   CheckCircle2,
@@ -39,7 +38,6 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
   const [authError, setAuthError] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [updatingId, setUpdatingId] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'inquiries' | 'notes'>('inquiries');
 
   const isAdmin = isUserAdmin(currentUser);
 
@@ -52,7 +50,6 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
     setLoading(true);
     const unsubscribe = subscribeToInquiries(
       (data) => {
-        // If not admin, only show user's own inquiries
         const filtered = isAdmin
           ? data
           : data.filter((item) => item.userId === currentUser.uid);
@@ -111,10 +108,10 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
       : inquiries.filter((inq) => inq.status === statusFilter);
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="relative bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col border border-[#F3EAF7] animate-in fade-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black/70 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="relative bg-white dark:bg-[#16111D] rounded-3xl w-full max-w-4xl max-h-[90vh] overflow-hidden shadow-2xl flex flex-col border border-[#F3EAF7] dark:border-[#2E2338] animate-in fade-in zoom-in-95 duration-200">
         {/* Modal Header */}
-        <div className="p-6 border-b border-gray-100 flex items-center justify-between bg-[#FAF8FC]">
+        <div className="p-6 border-b border-gray-100 dark:border-[#261D2E] flex items-center justify-between bg-[#FAF8FC] dark:bg-[#120E18]">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-[#710193] text-white flex items-center justify-center shadow-xs">
               {isAdmin ? (
@@ -124,14 +121,14 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
               )}
             </div>
             <div>
-              <h3 className="font-heading font-bold text-lg text-[#1D1722]">
+              <h3 className="font-heading font-bold text-lg text-[#1D1722] dark:text-white">
                 {currentUser
                   ? isAdmin
                     ? 'BluePeak Agency Admin Portal'
                     : 'Client Inquiries Portal'
                   : 'BluePeak Client & Partner Portal'}
               </h3>
-              <p className="text-xs text-[#706778]">
+              <p className="text-xs text-[#706778] dark:text-[#A69CB0]">
                 {currentUser
                   ? `Signed in as ${currentUser.email}`
                   : 'Sign in with Google to review your inquiries and project statuses'}
@@ -143,7 +140,7 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
             {currentUser && (
               <button
                 onClick={handleSignOut}
-                className="px-3 py-1.5 text-xs font-semibold text-red-600 hover:bg-red-50 rounded-lg flex items-center gap-1.5 transition-colors"
+                className="px-3 py-1.5 text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 rounded-lg flex items-center gap-1.5 transition-colors"
                 title="Sign Out"
               >
                 <LogOut className="w-3.5 h-3.5" />
@@ -153,7 +150,7 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
 
             <button
               onClick={onClose}
-              className="p-2 rounded-xl text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-xl text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-[#20172B] transition-colors"
               aria-label="Close modal"
             >
               <X className="w-5 h-5" />
@@ -166,20 +163,20 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
           {!currentUser ? (
             /* Unauthenticated State */
             <div className="text-center py-12 max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-2xl bg-[#F3EAF7] text-[#710193] mx-auto flex items-center justify-center mb-6">
+              <div className="w-16 h-16 rounded-2xl bg-[#F3EAF7] dark:bg-[#251532] text-[#710193] dark:text-[#C553ED] mx-auto flex items-center justify-center mb-6">
                 <FileText className="w-8 h-8" />
               </div>
-              <h4 className="text-xl font-heading font-bold text-[#1D1722] mb-3">
+              <h4 className="text-xl font-heading font-bold text-[#1D1722] dark:text-white mb-3">
                 Access Project Status & Inquiries
               </h4>
-              <p className="text-sm text-[#706778] mb-8 leading-relaxed">
+              <p className="text-sm text-[#706778] dark:text-[#A69CB0] mb-8 leading-relaxed">
                 Clients and partners can sign in to track submitted inquiries,
                 monitor review progress, and communicate on milestones. Agency
                 admins can view and manage all lead submissions in real-time.
               </p>
 
               {authError && (
-                <div className="mb-4 p-3 bg-red-50 text-red-700 text-xs rounded-xl flex items-center gap-2 text-left">
+                <div className="mb-4 p-3 bg-red-50 dark:bg-red-950/40 text-red-700 dark:text-red-300 text-xs rounded-xl flex items-center gap-2 text-left">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{authError}</span>
                 </div>
@@ -188,7 +185,7 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
               <button
                 onClick={handleGoogleSignIn}
                 disabled={loading}
-                className="w-full inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl bg-white border border-gray-300 text-sm font-semibold text-gray-700 shadow-xs hover:bg-gray-50 hover:border-gray-400 transition-all focus:outline-none focus:ring-2 focus:ring-[#710193]"
+                className="w-full inline-flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl bg-white dark:bg-[#1C1525] border border-gray-300 dark:border-[#2E2338] text-sm font-semibold text-gray-700 dark:text-white shadow-xs hover:bg-gray-50 dark:hover:bg-[#241A30] transition-all focus:outline-none focus:ring-2 focus:ring-[#710193]"
               >
                 {/* Google Icon */}
                 <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -216,10 +213,10 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
             /* Authenticated Inquiries View */
             <div>
               {/* Filter and stats row */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6 pb-4 border-b border-gray-100 dark:border-[#261D2E]">
                 <div className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-[#706778]" />
-                  <span className="text-xs font-bold uppercase tracking-wider text-[#706778]">
+                  <Filter className="w-4 h-4 text-[#706778] dark:text-[#A69CB0]" />
+                  <span className="text-xs font-bold uppercase tracking-wider text-[#706778] dark:text-[#A69CB0]">
                     Filter by Status:
                   </span>
                   <div className="flex flex-wrap gap-1">
@@ -231,7 +228,7 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                           className={`px-3 py-1 rounded-full text-xs font-semibold capitalize transition-colors ${
                             statusFilter === status
                               ? 'bg-[#710193] text-white'
-                              : 'bg-gray-100 text-[#706778] hover:bg-gray-200'
+                              : 'bg-gray-100 dark:bg-[#20172B] text-[#706778] dark:text-[#A69CB0] hover:bg-gray-200 dark:hover:bg-[#2B1F3A]'
                           }`}
                         >
                           {status.replace('_', ' ')}
@@ -241,25 +238,28 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                   </div>
                 </div>
 
-                <div className="text-xs font-medium text-[#706778]">
-                  Total Records: <span className="font-bold text-[#1D1722]">{displayedInquiries.length}</span>
+                <div className="text-xs font-medium text-[#706778] dark:text-[#A69CB0]">
+                  Total Records:{' '}
+                  <span className="font-bold text-[#1D1722] dark:text-white">
+                    {displayedInquiries.length}
+                  </span>
                 </div>
               </div>
 
               {loading ? (
                 <div className="text-center py-12">
-                  <Loader2 className="w-8 h-8 text-[#710193] animate-spin mx-auto mb-2" />
-                  <p className="text-xs text-[#706778]">
+                  <Loader2 className="w-8 h-8 text-[#710193] dark:text-[#C553ED] animate-spin mx-auto mb-2" />
+                  <p className="text-xs text-[#706778] dark:text-[#A69CB0]">
                     Syncing inquiries from Firestore...
                   </p>
                 </div>
               ) : displayedInquiries.length === 0 ? (
-                <div className="text-center py-12 bg-[#FAF8FC] rounded-2xl border border-dashed border-gray-200">
+                <div className="text-center py-12 bg-[#FAF8FC] dark:bg-[#120E18] rounded-2xl border border-dashed border-gray-200 dark:border-[#2E2338]">
                   <FileText className="w-8 h-8 text-gray-400 mx-auto mb-2" />
-                  <h5 className="font-heading font-bold text-sm text-[#1D1722]">
+                  <h5 className="font-heading font-bold text-sm text-[#1D1722] dark:text-white">
                     No Inquiries Found
                   </h5>
-                  <p className="text-xs text-[#706778] max-w-sm mx-auto mt-1">
+                  <p className="text-xs text-[#706778] dark:text-[#A69CB0] max-w-sm mx-auto mt-1">
                     {statusFilter === 'all'
                       ? "You haven't submitted any inquiries yet. Submit an inquiry through the contact form on the homepage."
                       : `No inquiries with status '${statusFilter}'.`}
@@ -269,21 +269,21 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                 <div className="space-y-4">
                   {displayedInquiries.map((inq) => {
                     const statusColors = {
-                      new: 'bg-blue-50 text-blue-700 border-blue-200',
-                      in_review: 'bg-amber-50 text-amber-700 border-amber-200',
-                      contacted: 'bg-purple-50 text-purple-700 border-purple-200',
-                      completed: 'bg-emerald-50 text-emerald-700 border-emerald-200',
-                    }[inq.status] || 'bg-gray-50 text-gray-700 border-gray-200';
+                      new: 'bg-blue-50 dark:bg-blue-950/40 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-900/50',
+                      in_review: 'bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 border-amber-200 dark:border-amber-900/50',
+                      contacted: 'bg-purple-50 dark:bg-purple-950/40 text-purple-700 dark:text-purple-300 border-purple-200 dark:border-purple-900/50',
+                      completed: 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-900/50',
+                    }[inq.status] || 'bg-gray-50 dark:bg-gray-800 text-gray-700 dark:text-gray-300 border-gray-200 dark:border-gray-700';
 
                     return (
                       <div
                         key={inq.id}
-                        className="p-5 rounded-2xl border border-gray-100 bg-[#FAF8FC] hover:bg-white transition-all shadow-xs"
+                        className="p-5 rounded-2xl border border-gray-100 dark:border-[#261D2E] bg-[#FAF8FC] dark:bg-[#1C1525] hover:bg-white dark:hover:bg-[#221A2D] transition-all shadow-xs"
                       >
                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-3">
                           <div>
                             <div className="flex items-center gap-2">
-                              <h5 className="font-heading font-bold text-base text-[#1D1722]">
+                              <h5 className="font-heading font-bold text-base text-[#1D1722] dark:text-white">
                                 {inq.name}
                               </h5>
                               <span
@@ -292,9 +292,9 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                                 {inq.status.replace('_', ' ')}
                               </span>
                             </div>
-                            <div className="flex flex-wrap items-center gap-3 text-xs text-[#706778] mt-1">
+                            <div className="flex flex-wrap items-center gap-3 text-xs text-[#706778] dark:text-[#A69CB0] mt-1">
                               <span className="flex items-center gap-1">
-                                <Mail className="w-3.5 h-3.5 text-[#710193]" />
+                                <Mail className="w-3.5 h-3.5 text-[#710193] dark:text-[#C553ED]" />
                                 <a
                                   href={`mailto:${inq.email}`}
                                   className="hover:underline"
@@ -304,15 +304,15 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                               </span>
                               {inq.company && (
                                 <span className="flex items-center gap-1">
-                                  <Building className="w-3.5 h-3.5 text-[#706778]" />
+                                  <Building className="w-3.5 h-3.5 text-[#706778] dark:text-[#A69CB0]" />
                                   <span>{inq.company}</span>
                                 </span>
                               )}
-                              <span className="font-medium text-[#710193] bg-[#F3EAF7] px-2 py-0.5 rounded-md">
+                              <span className="font-medium text-[#710193] dark:text-[#E2A6F7] bg-[#F3EAF7] dark:bg-[#291736] px-2 py-0.5 rounded-md">
                                 {inq.service}
                               </span>
                               {inq.budget && (
-                                <span className="text-gray-500">
+                                <span className="text-gray-500 dark:text-gray-400">
                                   Budget: {inq.budget}
                                 </span>
                               )}
@@ -322,7 +322,7 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                           {/* Admin status switcher */}
                           {isAdmin && inq.id && (
                             <div className="flex items-center gap-2 shrink-0">
-                              <span className="text-[11px] font-semibold text-[#706778]">
+                              <span className="text-[11px] font-semibold text-[#706778] dark:text-[#A69CB0]">
                                 Update Status:
                               </span>
                               <select
@@ -334,7 +334,7 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                                   )
                                 }
                                 disabled={updatingId === inq.id}
-                                className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 bg-white font-medium text-[#1D1722] focus:outline-none focus:ring-1 focus:ring-[#710193]"
+                                className="text-xs px-2.5 py-1.5 rounded-lg border border-gray-200 dark:border-[#2E2338] bg-white dark:bg-[#16111D] font-medium text-[#1D1722] dark:text-white focus:outline-none focus:ring-1 focus:ring-[#710193]"
                               >
                                 <option value="new">New</option>
                                 <option value="in_review">In Review</option>
@@ -346,12 +346,12 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
                         </div>
 
                         {/* Message body */}
-                        <div className="p-3.5 bg-white rounded-xl border border-gray-100 text-xs sm:text-sm text-[#1D1722] leading-relaxed whitespace-pre-wrap">
+                        <div className="p-3.5 bg-white dark:bg-[#120E18] rounded-xl border border-gray-100 dark:border-[#261D2E] text-xs sm:text-sm text-[#1D1722] dark:text-white leading-relaxed whitespace-pre-wrap">
                           {inq.message}
                         </div>
 
                         {inq.adminNotes && (
-                          <div className="mt-2 text-xs p-2.5 bg-[#F3EAF7]/60 rounded-lg text-[#710193] border border-[#710193]/15">
+                          <div className="mt-2 text-xs p-2.5 bg-[#F3EAF7]/60 dark:bg-[#251532] rounded-lg text-[#710193] dark:text-[#E2A6F7] border border-[#710193]/15 dark:border-[#710193]/30">
                             <span className="font-bold">Admin Note:</span>{' '}
                             {inq.adminNotes}
                           </div>
@@ -366,14 +366,14 @@ export const InquiriesModal: React.FC<InquiriesModalProps> = ({
         </div>
 
         {/* Modal Footer */}
-        <div className="p-4 border-t border-gray-100 bg-[#FAF8FC] flex items-center justify-between text-xs text-[#706778]">
+        <div className="p-4 border-t border-gray-100 dark:border-[#261D2E] bg-[#FAF8FC] dark:bg-[#120E18] flex items-center justify-between text-xs text-[#706778] dark:text-[#A69CB0]">
           <div className="flex items-center gap-1.5">
             <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
             <span>Firebase Firestore live synchronization active</span>
           </div>
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-semibold text-[#1D1722] bg-white border border-gray-200 rounded-xl hover:bg-gray-50 transition-colors"
+            className="px-4 py-2 text-xs font-semibold text-[#1D1722] dark:text-white bg-white dark:bg-[#1C1525] border border-gray-200 dark:border-[#2E2338] rounded-xl hover:bg-gray-50 dark:hover:bg-[#261C33] transition-colors"
           >
             Close
           </button>

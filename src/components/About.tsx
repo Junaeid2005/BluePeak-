@@ -27,28 +27,28 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-24 bg-white relative overflow-hidden">
+    <section id="about" className="py-24 bg-white dark:bg-[#0C0910] relative overflow-hidden transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
         <div className="max-w-3xl mx-auto text-center mb-16">
-          <div className="text-xs font-semibold uppercase tracking-widest text-[#710193] mb-3">
+          <div className="text-xs font-semibold uppercase tracking-widest text-[#710193] dark:text-[#E2A6F7] mb-3">
             Company Background &bull; BluePeak
           </div>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-extrabold text-[#1D1722] tracking-tight mb-5">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-heading font-extrabold text-[#1D1722] dark:text-white tracking-tight mb-5">
             Who We Are
           </h2>
-          <div className="w-12 h-0.5 bg-[#710193] mx-auto mb-8 opacity-80" />
+          <div className="w-12 h-0.5 bg-[#710193] dark:bg-[#9E24C7] mx-auto mb-8 opacity-80" />
 
           {/* Prompt exact text */}
-          <p className="text-lg sm:text-xl text-[#1D1722] font-medium leading-relaxed mb-5">
+          <p className="text-lg sm:text-xl text-[#1D1722] dark:text-[#FAF8FC] font-medium leading-relaxed mb-5">
             At BluePeak, we believe every business deserves a strong digital presence.
           </p>
-          <p className="text-base sm:text-lg text-[#706778] leading-relaxed mb-4">
+          <p className="text-base sm:text-lg text-[#706778] dark:text-[#A69CB0] leading-relaxed mb-4">
             We are a creative digital solutions team focused on helping businesses grow
             through professional web development, thoughtful design, and effective
             digital strategies.
           </p>
-          <p className="text-base sm:text-lg text-[#706778] leading-relaxed">
+          <p className="text-base sm:text-lg text-[#706778] dark:text-[#A69CB0] leading-relaxed">
             Our goal is simple: to turn ideas into meaningful digital experiences that
             help businesses connect with their audience and move forward with
             confidence.
@@ -62,29 +62,29 @@ export const About: React.FC = () => {
             return (
               <div
                 key={pillar.title}
-                className="group relative bg-[#FAF8FC] hover:bg-white rounded-2xl p-8 border border-[#F3EAF7] hover:border-[#710193]/30 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 transition-all duration-300 flex flex-col justify-between"
+                className="group relative bg-[#FAF8FC] dark:bg-[#16111D] hover:bg-white dark:hover:bg-[#1D1627] rounded-2xl p-8 border border-[#F3EAF7] dark:border-[#261D2E] hover:border-[#710193]/30 dark:hover:border-[#9E24C7]/40 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 dark:hover:shadow-[#710193]/20 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-center justify-between mb-6">
-                    <div className="w-12 h-12 rounded-xl bg-white border border-[#F3EAF7] flex items-center justify-center text-[#710193] group-hover:bg-[#710193] group-hover:text-white transition-all duration-300 shadow-xs">
+                    <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#20172B] border border-[#F3EAF7] dark:border-[#2E2338] flex items-center justify-center text-[#710193] dark:text-[#E2A6F7] group-hover:bg-[#710193] group-hover:text-white transition-all duration-300 shadow-xs">
                       <Icon className="w-5 h-5" />
                     </div>
-                    <span className="text-xs font-semibold tracking-wider text-[#710193]">
+                    <span className="text-xs font-semibold tracking-wider text-[#710193] dark:text-[#E2A6F7]">
                       {pillar.tag}
                     </span>
                   </div>
 
-                  <h3 className="text-2xl font-heading font-bold text-[#1D1722] mb-3">
+                  <h3 className="text-2xl font-heading font-bold text-[#1D1722] dark:text-white mb-3">
                     {pillar.title}
                   </h3>
 
-                  <p className="text-base text-[#706778] leading-relaxed">
+                  <p className="text-base text-[#706778] dark:text-[#A69CB0] leading-relaxed">
                     "{pillar.statement}"
                   </p>
                 </div>
 
-                <div className="pt-6 mt-6 border-t border-gray-100 flex items-center gap-2 text-xs font-medium text-[#706778]">
-                  <Check className="w-4 h-4 text-[#710193]" />
+                <div className="pt-6 mt-6 border-t border-gray-100 dark:border-[#261D2E] flex items-center gap-2 text-xs font-medium text-[#706778] dark:text-[#A69CB0]">
+                  <Check className="w-4 h-4 text-[#710193] dark:text-[#C553ED]" />
                   <span>Foundational Principle</span>
                 </div>
               </div>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Logo } from './Logo';
-import { Phone, Mail, ArrowUp, Globe2, Shield } from 'lucide-react';
+import { Phone, Mail, ArrowUp, Globe2 } from 'lucide-react';
 import { COMPANY_INFO, SERVICES_DATA } from '../data/agencyData';
 
 interface FooterProps {
@@ -28,9 +28,9 @@ export const Footer: React.FC<FooterProps> = ({
   ];
 
   return (
-    <footer className="bg-[#1D1722] text-white pt-20 pb-12 border-t border-white/10">
+    <footer className="bg-[#1D1722] dark:bg-[#08050C] text-white pt-20 pb-12 border-t border-white/10 dark:border-white/5 transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-white/10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 pb-16 border-b border-white/10 dark:border-white/5">
           {/* Brand info (4 cols) */}
           <div className="lg:col-span-4 space-y-5">
             <Logo variant="light" showTagline={true} />
@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({
               {COMPANY_INFO.description}
             </p>
             <div className="pt-2 flex items-center gap-2 text-xs text-gray-400">
-              <Globe2 className="w-4 h-4 text-[#710193]" />
+              <Globe2 className="w-4 h-4 text-[#9E24C7]" />
               <span>Global agency supporting UK, Germany & Bangladesh</span>
             </div>
           </div>

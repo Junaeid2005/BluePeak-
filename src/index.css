@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
   :root {
@@ -15,6 +16,13 @@
     background-color: #FAF8FC;
     color: #1D1722;
     overflow-x: hidden;
+    transition: background-color 0.25s ease, color 0.25s ease;
+  }
+
+  .dark body,
+  html.dark body {
+    background-color: #0C0910;
+    color: #FAF8FC;
   }
 
   h1, h2, h3, h4, .font-heading {
@@ -35,10 +43,20 @@
 ::-webkit-scrollbar-track {
   background: #FAF8FC;
 }
+html.dark ::-webkit-scrollbar-track {
+  background: #0C0910;
+}
 ::-webkit-scrollbar-thumb {
   background: #e2d3e9;
   border-radius: 4px;
 }
+html.dark ::-webkit-scrollbar-thumb {
+  background: #2E2338;
+  border-radius: 4px;
+}
 ::-webkit-scrollbar-thumb:hover {
   background: #710193;
+}
+html.dark ::-webkit-scrollbar-thumb:hover {
+  background: #9E24C7;
 }

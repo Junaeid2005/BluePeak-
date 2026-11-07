@@ -27,6 +27,35 @@ export default function App() {
   const [legalModalType, setLegalModalType] = useState<'privacy' | 'terms' | null>(null);
   const [contactInitialService, setContactInitialService] = useState<string>('Website Development');
 
+  // Theme state: 'light' (white theme) or 'dark' (black theme)
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('bluepeak_theme');
+      if (saved === 'dark' || saved === 'light') return saved;
+      // Default to light as specified in the brand identity, but respect prefers-color-scheme if user prefers
+      if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+      }
+    }
+    return 'light';
+  });
+
+  useEffect(() => {
+    // Sync class on <html>
+    const root = document.documentElement;
+    if (theme === 'dark') {
+      root.classList.add('dark');
+      localStorage.setItem('bluepeak_theme', 'dark');
+    } else {
+      root.classList.remove('dark');
+      localStorage.setItem('bluepeak_theme', 'light');
+    }
+  }, [theme]);
+
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+  };
+
   useEffect(() => {
     // 1. Check connection to Firestore on boot as mandated by Firebase skill
     testFirestoreConnection();
@@ -57,12 +86,14 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8FC] text-[#1D1722]">
-      {/* Navigation Bar */}
+    <div className="min-h-screen flex flex-col bg-[#FAF8FC] dark:bg-[#0C0910] text-[#1D1722] dark:text-[#FAF8FC] transition-colors duration-300">
+      {/* Navigation Bar with Theme Switcher */}
       <Navbar
         currentUser={currentUser}
         onOpenAuthPortal={() => setAuthPortalOpen(true)}
         onOpenContact={() => scrollToContact()}
+        theme={theme}
+        onToggleTheme={toggleTheme}
       />
 
       {/* Main Page Sections */}
