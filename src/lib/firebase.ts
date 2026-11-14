@@ -1,24 +1,12 @@
 import { initializeApp } from 'firebase/app';
-import {
-  getAuth,
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-  type User,
-} from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
 import {
   getFirestore,
   collection,
   addDoc,
   serverTimestamp,
-  query,
-  orderBy,
-  onSnapshot,
   doc,
-  updateDoc,
   getDocFromServer,
-  type Unsubscribe,
 } from 'firebase/firestore';
 import firebaseConfig from '../../firebase-applet-config.json';
 
@@ -48,17 +36,6 @@ const resolvedConfig = {
 const app = initializeApp(resolvedConfig);
 export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
 export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
-
-export const ADMIN_EMAILS = [
-  'junaeidshohan@gmail.com',
-  'abu.work.official452@gmail.com',
-];
-
-export function isUserAdmin(user: User | null): boolean {
-  if (!user || !user.email) return false;
-  return ADMIN_EMAILS.includes(user.email.toLowerCase());
-}
 
 // Error handling per Firebase Skill specification
 export enum OperationType {
@@ -136,15 +113,12 @@ export interface InquiryData {
   service: string;
   budget?: string;
   message: string;
-  status: 'new' | 'in_review' | 'contacted' | 'completed';
-  userId?: string;
-  adminNotes?: string;
+  status: 'new';
   createdAt?: unknown;
-  updatedAt?: unknown;
 }
 
 /**
- * Submit client inquiry to Firestore
+ * Submit client inquiry to Firestore without requiring authentication
  */
 export async function submitInquiry(
   data: Omit<InquiryData, 'id' | 'status' | 'createdAt'>
@@ -155,11 +129,10 @@ export async function submitInquiry(
       name: data.name.trim().slice(0, 100),
       email: data.email.trim().toLowerCase().slice(0, 120),
       company: data.company ? data.company.trim().slice(0, 120) : '',
-      service: data.service.slice(0, 80),
-      budget: data.budget ? data.budget.slice(0, 60) : '',
+      service: data.service.trim().slice(0, 80),
+      budget: data.budget ? data.budget.trim().slice(0, 60) : '',
       message: data.message.trim().slice(0, 2000),
-      status: 'new',
-      userId: auth.currentUser?.uid || '',
+      status: 'new' as const,
       createdAt: serverTimestamp(),
     };
 
@@ -169,70 +142,3 @@ export async function submitInquiry(
     handleFirestoreError(error, OperationType.CREATE, path);
   }
 }
-
-/**
- * Subscribe to inquiries (Admin or Author)
- */
-export function subscribeToInquiries(
-  onData: (inquiries: InquiryData[]) => void,
-  onError?: (error: Error) => void
-): Unsubscribe {
-  const path = 'inquiries';
-  const q = query(collection(db, path), orderBy('createdAt', 'desc'));
-
-  return onSnapshot(
-    q,
-    (snapshot) => {
-      const list: InquiryData[] = snapshot.docs.map((d) => ({
-        id: d.id,
-        ...(d.data() as Omit<InquiryData, 'id'>),
-      }));
-      onData(list);
-    },
-    (error) => {
-      if (onError) onError(error);
-      handleFirestoreError(error, OperationType.LIST, path);
-    }
-  );
-}
-
-/**
- * Update inquiry status or notes (Admin only)
- */
-export async function updateInquiryStatus(
-  inquiryId: string,
-  status: 'new' | 'in_review' | 'contacted' | 'completed',
-  adminNotes?: string
-): Promise<void> {
-  const path = `inquiries/${inquiryId}`;
-  try {
-    const docRef = doc(db, 'inquiries', inquiryId);
-    const updatePayload: Record<string, unknown> = {
-      status,
-      updatedAt: serverTimestamp(),
-    };
-    if (adminNotes !== undefined) {
-      updatePayload.adminNotes = adminNotes.slice(0, 1000);
-    }
-    await updateDoc(docRef, updatePayload);
-  } catch (error) {
-    handleFirestoreError(error, OperationType.UPDATE, path);
-  }
-}
-
-/**
- * Sign in with Google
- */
-export async function signInWithGoogle(): Promise<User> {
-  const result = await signInWithPopup(auth, googleProvider);
-  return result.user;
-}
-
-/**
- * Sign out
- */
-export async function logOut(): Promise<void> {
-  await signOut(auth);
-}
-
-export { onAuthStateChanged };

@@ -5,11 +5,27 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_-]+$');
+    }
+
+    function isValidInquiry(data) {
+      return data.keys().hasAll(['name', 'email', 'company', 'service', 'budget', 'message', 'status', 'createdAt']) &&
+             data.keys().hasOnly(['name', 'email', 'company', 'service', 'budget', 'message', 'status', 'createdAt']) &&
+             data.name is string && data.name.size() >= 2 && data.name.size() <= 100 &&
+             data.email is string && data.email.size() >= 5 && data.email.size() <= 120 &&
+             data.email.matches('^[^ @]+@[^ @]+\\.[^ @]+$') &&
+             data.company is string && data.company.size() <= 120 &&
+             data['service'] is string && data['service'].size() >= 2 && data['service'].size() <= 80 &&
+             data.budget is string && data.budget.size() <= 60 &&
+             data.message is string && data.message.size() >= 10 && data.message.size() <= 2000 &&
+             data.status == 'new' &&
+             data.createdAt == request.time;
+    }
+
     match /inquiries/{inquiryId} {
-      allow create: if request.resource.data.name is string &&
-                    request.resource.data.email is string &&
-                    request.resource.data.message is string;
-      allow read, update, delete: if request.auth != null;
+      allow create: if isValidId(inquiryId) && isValidInquiry(request.resource.data);
+      allow read, update, delete: if false;
     }
   }
 }

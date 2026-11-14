@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Logo } from './Logo';
-import { Menu, X, ArrowUpRight, User, ShieldCheck, Sun, Moon } from 'lucide-react';
-import type { User as FirebaseUser } from 'firebase/auth';
+import { Menu, X, ArrowUpRight, Sun, Moon } from 'lucide-react';
 import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
-import { isUserAdmin } from '../lib/firebase';
 import { scrollToSectionSmooth, EASE_OUT_EXPO } from './SectionTransition';
 
 interface NavbarProps {
-  currentUser: FirebaseUser | null;
-  onOpenAuthPortal: () => void;
   onOpenContact: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
@@ -24,8 +20,6 @@ const NAV_LINKS = [
 ];
 
 export const Navbar: React.FC<NavbarProps> = ({
-  currentUser,
-  onOpenAuthPortal,
   onOpenContact,
   theme,
   onToggleTheme,
@@ -77,7 +71,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     scrollToSectionSmooth(href);
   };
 
-  const isAdmin = isUserAdmin(currentUser);
   const isDark = theme === 'dark';
 
   return (
@@ -150,34 +143,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Auth / Client Portal icon-only button */}
-            <button
-              onClick={onOpenAuthPortal}
-              className={`p-2 rounded-full border transition-all shadow-xs ${
-                currentUser
-                  ? 'bg-[#F3EAF7] dark:bg-[#291636] text-[#710193] dark:text-[#E2A6F7] border-[#710193]/30 dark:border-[#710193]/50 hover:bg-[#710193] hover:text-white'
-                  : 'bg-white dark:bg-[#16111D] text-[#706778] dark:text-[#A69CB0] border-gray-200 dark:border-[#2E2338] hover:border-[#710193] dark:hover:border-[#9E24C7] hover:text-[#710193] dark:hover:text-white'
-              }`}
-              title={
-                currentUser
-                  ? `${isAdmin ? 'Admin Portal' : 'My Inquiries'} (${currentUser.email})`
-                  : 'Sign In'
-              }
-              aria-label={currentUser ? (isAdmin ? 'Admin Portal' : 'My Inquiries') : 'Sign In'}
-            >
-              {currentUser?.photoURL ? (
-                <img
-                  src={currentUser.photoURL}
-                  alt={currentUser.displayName || 'User'}
-                  className="w-4 h-4 rounded-full object-cover"
-                />
-              ) : isAdmin ? (
-                <ShieldCheck className="w-4 h-4 text-[#710193] dark:text-[#C553ED]" />
-              ) : (
-                <User className="w-4 h-4" />
-              )}
-            </button>
-
             {/* Let's Talk CTA */}
             <button
               onClick={onOpenContact}
@@ -196,29 +161,6 @@ export const Navbar: React.FC<NavbarProps> = ({
               aria-label="Toggle theme"
             >
               {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-[#710193]" />}
-            </button>
-
-            <button
-              onClick={onOpenAuthPortal}
-              className={`p-2 rounded-full border transition-all ${
-                currentUser
-                  ? 'bg-[#F3EAF7] dark:bg-[#291636] text-[#710193] dark:text-[#C553ED] border-[#710193]/30'
-                  : 'bg-white dark:bg-[#16111D] text-[#706778] dark:text-[#A69CB0] border-gray-200 dark:border-[#2E2338]'
-              }`}
-              aria-label={currentUser ? (isAdmin ? 'Admin Portal' : 'My Inquiries') : 'Sign In'}
-              title={currentUser ? `Signed in as ${currentUser.email}` : 'Sign In'}
-            >
-              {currentUser?.photoURL ? (
-                <img
-                  src={currentUser.photoURL}
-                  alt={currentUser.displayName || 'User'}
-                  className="w-4 h-4 rounded-full object-cover"
-                />
-              ) : isAdmin ? (
-                <ShieldCheck className="w-4 h-4 text-[#710193] dark:text-[#C553ED]" />
-              ) : (
-                <User className="w-4 h-4" />
-              )}
             </button>
 
             <button

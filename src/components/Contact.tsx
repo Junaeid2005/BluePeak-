@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Phone,
   Mail,
@@ -20,12 +20,10 @@ import {
 
 interface ContactProps {
   initialService?: string;
-  onInquirySubmitted?: (inquiryId: string) => void;
 }
 
 export const Contact: React.FC<ContactProps> = ({
   initialService = '',
-  onInquirySubmitted,
 }) => {
   const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -33,9 +31,11 @@ export const Contact: React.FC<ContactProps> = ({
   const [service, setService] = useState(initialService || 'Website Development');
   const [budget, setBudget] = useState('');
   const [message, setMessage] = useState('');
+  const [website, setWebsite] = useState(''); // Honeypot anti-spam field
+  const formLoadedAtRef = useRef<number>(Date.now());
 
   const [loading, setLoading] = useState(false);
-  const [successId, setSuccessId] = useState<string | null>(null);
+  const [submittedSuccess, setSubmittedSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export const Contact: React.FC<ContactProps> = ({
   }, [initialService]);
 
   const budgetOptions = [
-    'Select a budget range (Optional)',
+    'Select an estimated budget (Optional)',
     'Under $1,500',
     '$1,500 - $3,500',
     '$3,500 - $7,500',
@@ -57,56 +57,104 @@ export const Contact: React.FC<ContactProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
+    setSubmittedSuccess(false);
 
-    // Client-side validation
-    if (!fullName.trim() || fullName.trim().length < 2) {
-      setErrorMessage('Please provide your full name (minimum 2 characters).');
+    // Client-side validation matching server & Firestore bounds
+    const trimmedName = fullName.trim();
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedCompany = company.trim();
+    const trimmedMessage = message.trim();
+    const selectedBudget = budget && budget !== budgetOptions[0] ? budget : '';
+
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      setErrorMessage('Please provide your full name (2 to 100 characters).');
       return;
     }
 
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email.trim() || !emailRegex.test(email.trim())) {
+    if (!trimmedEmail || !emailRegex.test(trimmedEmail) || trimmedEmail.length > 120) {
       setErrorMessage('Please provide a valid email address.');
       return;
     }
 
-    if (!message.trim() || message.trim().length < 10) {
-      setErrorMessage('Please enter a message of at least 10 characters.');
+    if (trimmedCompany.length > 120) {
+      setErrorMessage('Business Name must be 120 characters or fewer.');
+      return;
+    }
+
+    if (trimmedMessage.length < 10 || trimmedMessage.length > 2000) {
+      setErrorMessage('Please enter project details between 10 and 2000 characters.');
       return;
     }
 
     try {
       setLoading(true);
-      const newId = await submitInquiry({
-        name: fullName,
-        email,
-        company: company || undefined,
+
+      // 1. Save inquiry in the existing Firebase Firestore database (no sign-in required)
+      const inquiryId = await submitInquiry({
+        name: trimmedName,
+        email: trimmedEmail,
+        company: trimmedCompany || undefined,
         service,
-        budget: budget && budget !== budgetOptions[0] ? budget : undefined,
-        message,
+        budget: selectedBudget || undefined,
+        message: trimmedMessage,
       });
 
-      setSuccessId(newId);
-      if (onInquirySubmitted) onInquirySubmitted(newId);
+      // 2. Deliver inquiry to bluepeakzone2005@gmail.com via secure server-side Resend endpoint
+      const response = await fetch('/api/inquiries', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: trimmedName,
+          email: trimmedEmail,
+          company: trimmedCompany,
+          service,
+          budget: selectedBudget,
+          message: trimmedMessage,
+          inquiryId,
+          website,
+          formLoadedAt: formLoadedAtRef.current,
+        }),
+      });
 
-      // Reset form
+      const result = (await response.json().catch(() => null)) as
+        | { ok?: boolean; error?: string }
+        | null;
+
+      if (!response.ok || !result?.ok) {
+        throw new Error(
+          result?.error ||
+            'Unable to send your inquiry email right now. Please try again shortly.'
+        );
+      }
+
+      setSubmittedSuccess(true);
+
+      // Reset form cleanly
       setFullName('');
       setEmail('');
       setCompany('');
       setBudget('');
       setMessage('');
+      setWebsite('');
+      formLoadedAtRef.current = Date.now();
     } catch (err: unknown) {
       console.error('Submission failed:', err);
-      setErrorMessage(
-        'Unable to send your inquiry at this moment. Please reach out directly to junaeidshohan@gmail.com or call one of our phone lines.'
-      );
+      const msg =
+        err instanceof Error && err.message
+          ? err.message
+          : 'Unable to submit your inquiry right now. Please try again shortly.';
+      setErrorMessage(msg);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <section id="contact" className="py-24 bg-white dark:bg-[#0C0910] relative overflow-hidden transition-colors duration-300">
+    <section
+      id="contact"
+      className="py-24 bg-white dark:bg-[#0C0910] relative overflow-hidden transition-colors duration-300"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -231,19 +279,20 @@ export const Contact: React.FC<ContactProps> = ({
               </div>
 
               {/* Success Notification */}
-              {successId && (
+              {submittedSuccess && (
                 <div className="mb-8 p-6 bg-[#F3EAF7] dark:bg-[#251532] border border-[#710193]/20 dark:border-[#710193]/40 rounded-2xl animate-in fade-in duration-300">
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="w-6 h-6 text-[#710193] dark:text-[#C553ED] shrink-0 mt-0.5" />
                     <div>
                       <h4 className="font-heading font-bold text-base text-[#1D1722] dark:text-white">
-                        Inquiry Received!
+                        Inquiry Sent
                       </h4>
                       <p className="text-xs sm:text-sm text-[#706778] dark:text-[#A69CB0] mt-1">
-                        Thank you for reaching out to BluePeak. Your project inquiry has been securely saved to our database (Reference ID: <span className="font-mono font-semibold text-[#710193] dark:text-[#C553ED]">{successId.slice(0, 8)}...</span>). We will review your requirements and respond promptly.
+                        Thank you for contacting BluePeak! Your inquiry has been received. We'll get back to you soon.
                       </p>
                       <button
-                        onClick={() => setSuccessId(null)}
+                        type="button"
+                        onClick={() => setSubmittedSuccess(false)}
                         className="mt-3 text-xs font-bold text-[#710193] dark:text-[#C553ED] hover:underline"
                       >
                         Send another inquiry
@@ -262,6 +311,23 @@ export const Contact: React.FC<ContactProps> = ({
               )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
+                {/* Honeypot anti-spam input (invisible to real visitors) */}
+                <div
+                  aria-hidden="true"
+                  className="absolute -left-[9999px] top-auto w-px h-px overflow-hidden"
+                >
+                  <label htmlFor="contact-website">Website</label>
+                  <input
+                    id="contact-website"
+                    name="website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                   {/* Full Name */}
                   <div>
@@ -275,6 +341,7 @@ export const Contact: React.FC<ContactProps> = ({
                       id="full-name"
                       type="text"
                       required
+                      maxLength={100}
                       placeholder="e.g. Eleanor Vance"
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
@@ -294,6 +361,7 @@ export const Contact: React.FC<ContactProps> = ({
                       id="email-address"
                       type="email"
                       required
+                      maxLength={120}
                       placeholder="e.g. eleanor@company.com"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
@@ -303,17 +371,18 @@ export const Contact: React.FC<ContactProps> = ({
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                  {/* Company Name (Optional) */}
+                  {/* Business Name (Optional) */}
                   <div>
                     <label
                       htmlFor="company-name"
                       className="block text-xs font-bold uppercase tracking-wider text-[#1D1722] dark:text-[#FAF8FC] mb-2"
                     >
-                      Company Name <span className="text-gray-400 dark:text-gray-500 font-normal">(Optional)</span>
+                      Business Name <span className="text-gray-400 dark:text-gray-500 font-normal">(Optional)</span>
                     </label>
                     <input
                       id="company-name"
                       type="text"
+                      maxLength={120}
                       placeholder="e.g. Vantage Labs Ltd."
                       value={company}
                       onChange={(e) => setCompany(e.target.value)}
@@ -344,13 +413,13 @@ export const Contact: React.FC<ContactProps> = ({
                   </div>
                 </div>
 
-                {/* Project Budget (Optional) */}
+                {/* Estimated Budget (Optional) */}
                 <div>
                   <label
                     htmlFor="budget-select"
                     className="block text-xs font-bold uppercase tracking-wider text-[#1D1722] dark:text-[#FAF8FC] mb-2"
                   >
-                    Project Budget <span className="text-gray-400 dark:text-gray-500 font-normal">(Optional)</span>
+                    Estimated Budget <span className="text-gray-400 dark:text-gray-500 font-normal">(Optional)</span>
                   </label>
                   <select
                     id="budget-select"
@@ -366,18 +435,19 @@ export const Contact: React.FC<ContactProps> = ({
                   </select>
                 </div>
 
-                {/* Message */}
+                {/* Project Details */}
                 <div>
                   <label
                     htmlFor="project-message"
                     className="block text-xs font-bold uppercase tracking-wider text-[#1D1722] dark:text-[#FAF8FC] mb-2"
                   >
-                    Message <span className="text-[#710193] dark:text-[#C553ED]">*</span>
+                    Project Details <span className="text-[#710193] dark:text-[#C553ED]">*</span>
                   </label>
                   <textarea
                     id="project-message"
                     required
                     rows={5}
+                    maxLength={2000}
                     placeholder="Tell us about your project, goals, key milestones, or specific requirements..."
                     value={message}
                     onChange={(e) => setMessage(e.target.value)}

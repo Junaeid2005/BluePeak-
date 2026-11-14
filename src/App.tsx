@@ -10,20 +10,12 @@ import { Process } from './components/Process';
 import { CtaSection } from './components/CtaSection';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
-import { InquiriesModal } from './components/InquiriesModal';
 import { LegalModal } from './components/LegalModal';
 import { ProjectDetailsModal } from './components/ProjectDetailsModal';
 import { SectionBridge, scrollToSectionSmooth } from './components/SectionTransition';
-import {
-  auth,
-  onAuthStateChanged,
-  testFirestoreConnection,
-} from './lib/firebase';
-import type { User } from 'firebase/auth';
+import { testFirestoreConnection } from './lib/firebase';
 
 export default function App() {
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [authPortalOpen, setAuthPortalOpen] = useState(false);
   const [legalModalType, setLegalModalType] = useState<'privacy' | 'terms' | null>(null);
   const [selectedProject, setSelectedProject] = useState<FeaturedClientProject | null>(null);
   const [contactInitialService, setContactInitialService] = useState<string>('Website Development');
@@ -57,15 +49,8 @@ export default function App() {
   };
 
   useEffect(() => {
-    // 1. Check connection to Firestore on boot as mandated by Firebase skill
+    // Check connection to Firestore on boot as mandated by Firebase skill
     testFirestoreConnection();
-
-    // 2. Track authentication status
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setCurrentUser(user);
-    });
-
-    return () => unsubscribe();
   }, []);
 
   const scrollToContact = (serviceTitle?: string) => {
@@ -84,8 +69,6 @@ export default function App() {
       <div className="min-h-screen flex flex-col bg-[#FAF8FC] dark:bg-[#0C0910] text-[#1D1722] dark:text-[#FAF8FC] transition-colors duration-300">
         {/* Navigation Bar with Theme Switcher & Scroll Progress */}
         <Navbar
-          currentUser={currentUser}
-          onOpenAuthPortal={() => setAuthPortalOpen(true)}
           onOpenContact={() => scrollToContact()}
           theme={theme}
           onToggleTheme={toggleTheme}
@@ -135,13 +118,8 @@ export default function App() {
 
           <SectionBridge variant="cta-to-contact" />
 
-          {/* H. Contact Section with Real Firestore Persistence */}
-          <Contact
-            initialService={contactInitialService}
-            onInquirySubmitted={() => {
-              // Can optionally prompt or open inquiries portal
-            }}
-          />
+          {/* H. Contact Section with Firestore & Server Email Delivery */}
+          <Contact initialService={contactInitialService} />
         </main>
 
         {/* Footer */}
@@ -159,13 +137,6 @@ export default function App() {
             setSelectedProject(null);
             setTimeout(() => scrollToContact('Website Development'), 180);
           }}
-        />
-
-        {/* Client & Admin Inquiries Portal Modal (Firebase Auth & Firestore) */}
-        <InquiriesModal
-          isOpen={authPortalOpen}
-          onClose={() => setAuthPortalOpen(false)}
-          currentUser={currentUser}
         />
 
         {/* Privacy Policy / Terms Modal */}
