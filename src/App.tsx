@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { MotionConfig } from 'motion/react';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
@@ -10,6 +11,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { InquiriesModal } from './components/InquiriesModal';
 import { LegalModal } from './components/LegalModal';
+import { SectionBridge, scrollToSectionSmooth } from './components/SectionTransition';
 import {
   auth,
   onAuthStateChanged,
@@ -68,83 +70,91 @@ export default function App() {
     if (serviceTitle) {
       setContactInitialService(serviceTitle);
     }
-    const element = document.getElementById('contact');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSectionSmooth('contact');
   };
 
   const scrollToServices = () => {
-    const element = document.getElementById('services');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    scrollToSectionSmooth('services');
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#FAF8FC] dark:bg-[#0C0910] text-[#1D1722] dark:text-[#FAF8FC] transition-colors duration-300">
-      {/* Navigation Bar with Theme Switcher */}
-      <Navbar
-        currentUser={currentUser}
-        onOpenAuthPortal={() => setAuthPortalOpen(true)}
-        onOpenContact={() => scrollToContact()}
-        theme={theme}
-        onToggleTheme={toggleTheme}
-      />
-
-      {/* Main Page Sections */}
-      <main className="flex-1">
-        {/* A. Hero Section */}
-        <Hero
-          onExploreServices={scrollToServices}
-          onWorkTogether={() => scrollToContact()}
+    <MotionConfig reducedMotion="user">
+      <div className="min-h-screen flex flex-col bg-[#FAF8FC] dark:bg-[#0C0910] text-[#1D1722] dark:text-[#FAF8FC] transition-colors duration-300">
+        {/* Navigation Bar with Theme Switcher & Scroll Progress */}
+        <Navbar
+          currentUser={currentUser}
+          onOpenAuthPortal={() => setAuthPortalOpen(true)}
+          onOpenContact={() => scrollToContact()}
+          theme={theme}
+          onToggleTheme={toggleTheme}
         />
 
-        {/* B. About Section */}
-        <About />
+        {/* Main Page Sections with Fluid Architectural Section Bridges */}
+        <main className="flex-1">
+          {/* A. Hero Section */}
+          <Hero
+            onExploreServices={scrollToServices}
+            onWorkTogether={() => scrollToContact()}
+          />
 
-        {/* C. Services Section */}
-        <Services
+          <SectionBridge variant="hero-to-about" />
+
+          {/* B. About Section */}
+          <About />
+
+          <SectionBridge variant="seam-light-to-tint" />
+
+          {/* C. Services Section */}
+          <Services
+            onSelectService={(serviceTitle) => scrollToContact(serviceTitle)}
+          />
+
+          <SectionBridge variant="seam-tint-to-light" />
+
+          {/* D. Why Choose BluePeak */}
+          <WhyUs />
+
+          <SectionBridge variant="seam-light-to-tint" />
+
+          {/* E. Working Process */}
+          <Process />
+
+          <SectionBridge variant="seam-to-cta" />
+
+          {/* G. Call To Action Banner */}
+          <CtaSection onStartProject={() => scrollToContact()} />
+
+          <SectionBridge variant="cta-to-contact" />
+
+          {/* H. Contact Section with Real Firestore Persistence */}
+          <Contact
+            initialService={contactInitialService}
+            onInquirySubmitted={() => {
+              // Can optionally prompt or open inquiries portal
+            }}
+          />
+        </main>
+
+        {/* Footer */}
+        <Footer
+          onOpenPrivacy={() => setLegalModalType('privacy')}
+          onOpenTerms={() => setLegalModalType('terms')}
           onSelectService={(serviceTitle) => scrollToContact(serviceTitle)}
         />
 
-        {/* D. Why Choose BluePeak */}
-        <WhyUs />
-
-        {/* E. Working Process */}
-        <Process />
-
-        {/* G. Call To Action Banner */}
-        <CtaSection onStartProject={() => scrollToContact()} />
-
-        {/* H. Contact Section with Real Firestore Persistence */}
-        <Contact
-          initialService={contactInitialService}
-          onInquirySubmitted={() => {
-            // Can optionally prompt or open inquiries portal
-          }}
+        {/* Client & Admin Inquiries Portal Modal (Firebase Auth & Firestore) */}
+        <InquiriesModal
+          isOpen={authPortalOpen}
+          onClose={() => setAuthPortalOpen(false)}
+          currentUser={currentUser}
         />
-      </main>
 
-      {/* Footer */}
-      <Footer
-        onOpenPrivacy={() => setLegalModalType('privacy')}
-        onOpenTerms={() => setLegalModalType('terms')}
-        onSelectService={(serviceTitle) => scrollToContact(serviceTitle)}
-      />
-
-      {/* Client & Admin Inquiries Portal Modal (Firebase Auth & Firestore) */}
-      <InquiriesModal
-        isOpen={authPortalOpen}
-        onClose={() => setAuthPortalOpen(false)}
-        currentUser={currentUser}
-      />
-
-      {/* Privacy Policy / Terms Modal */}
-      <LegalModal
-        type={legalModalType}
-        onClose={() => setLegalModalType(null)}
-      />
-    </div>
+        {/* Privacy Policy / Terms Modal */}
+        <LegalModal
+          type={legalModalType}
+          onClose={() => setLegalModalType(null)}
+        />
+      </div>
+    </MotionConfig>
   );
 }

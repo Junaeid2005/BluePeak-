@@ -9,8 +9,14 @@ import {
   Clock,
   Sparkles,
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { COMPANY_INFO, SERVICES_DATA } from '../data/agencyData';
 import { submitInquiry } from '../lib/firebase';
+import {
+  EASE_OUT_EXPO,
+  VIEWPORT_CONFIG,
+  sectionHeaderVariants,
+} from './SectionTransition';
 
 interface ContactProps {
   initialService?: string;
@@ -100,10 +106,16 @@ export const Contact: React.FC<ContactProps> = ({
   };
 
   return (
-    <section id="contact" className="py-24 bg-white dark:bg-[#0C0910] relative transition-colors duration-300">
+    <section id="contact" className="py-24 bg-white dark:bg-[#0C0910] relative overflow-hidden transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <motion.div
+          variants={sectionHeaderVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_CONFIG}
+          className="max-w-3xl mx-auto text-center mb-16"
+        >
           <div className="text-xs font-semibold uppercase tracking-widest text-[#710193] dark:text-[#E2A6F7] mb-3">
             Direct Communication &bull; Inquiries
           </div>
@@ -115,11 +127,17 @@ export const Contact: React.FC<ContactProps> = ({
             Have an idea, a project, or simply want to explore how we can help
             your business? We'd love to hear from you.
           </p>
-        </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column: Direct Contact Info (5 cols) */}
-          <div className="lg:col-span-5 space-y-8">
+          <motion.div
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={VIEWPORT_CONFIG}
+            transition={{ duration: 0.65, ease: EASE_OUT_EXPO }}
+            className="lg:col-span-5 space-y-8"
+          >
             <div className="bg-[#FAF8FC] dark:bg-[#16111D] p-8 rounded-3xl border border-[#F3EAF7] dark:border-[#261D2E]">
               <h3 className="text-xl font-heading font-bold text-[#1D1722] dark:text-white mb-6 flex items-center gap-2">
                 <span>International Contact Lines</span>
@@ -186,10 +204,16 @@ export const Contact: React.FC<ContactProps> = ({
                 <span>We typically respond to inquiries within 24 hours.</span>
               </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* Right Column: Contact Inquiry Form (7 cols) */}
-          <div className="lg:col-span-7">
+          <motion.div
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={VIEWPORT_CONFIG}
+            transition={{ duration: 0.65, ease: EASE_OUT_EXPO, delay: 0.08 }}
+            className="lg:col-span-7"
+          >
             <div className="bg-white dark:bg-[#16111D] p-8 sm:p-10 rounded-3xl border border-[#F3EAF7] dark:border-[#261D2E] shadow-xl shadow-[#710193]/5 dark:shadow-[#710193]/15">
               <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100 dark:border-[#261D2E]">
                 <div>
@@ -385,7 +409,7 @@ export const Contact: React.FC<ContactProps> = ({
                 </button>
               </form>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

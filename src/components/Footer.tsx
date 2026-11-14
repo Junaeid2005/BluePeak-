@@ -1,7 +1,8 @@
 import React from 'react';
 import { Logo } from './Logo';
-import { Phone, Mail, ArrowUp, Globe2 } from 'lucide-react';
+import { ArrowUp, Globe2 } from 'lucide-react';
 import { COMPANY_INFO, SERVICES_DATA } from '../data/agencyData';
+import { scrollToSectionSmooth } from './SectionTransition';
 
 interface FooterProps {
   onOpenPrivacy: () => void;
@@ -15,7 +16,7 @@ export const Footer: React.FC<FooterProps> = ({
   onSelectService,
 }) => {
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    scrollToSectionSmooth('home');
   };
 
   const navLinks = [
@@ -52,6 +53,10 @@ export const Footer: React.FC<FooterProps> = ({
                 <li key={link.label}>
                   <a
                     href={link.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollToSectionSmooth(link.href);
+                    }}
                     className="hover:text-white transition-colors"
                   >
                     {link.label}
@@ -72,8 +77,6 @@ export const Footer: React.FC<FooterProps> = ({
                   <button
                     onClick={() => {
                       onSelectService(service.title);
-                      const el = document.getElementById('contact');
-                      if (el) el.scrollIntoView({ behavior: 'smooth' });
                     }}
                     className="hover:text-white transition-colors text-left"
                   >

@@ -2,7 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Logo } from './Logo';
 import { Menu, X, ArrowUpRight, User, ShieldCheck, Sun, Moon } from 'lucide-react';
 import type { User as FirebaseUser } from 'firebase/auth';
+import { motion, AnimatePresence, useScroll, useSpring } from 'motion/react';
 import { isUserAdmin } from '../lib/firebase';
+import { scrollToSectionSmooth, EASE_OUT_EXPO } from './SectionTransition';
 
 interface NavbarProps {
   currentUser: FirebaseUser | null;
@@ -12,6 +14,14 @@ interface NavbarProps {
   onToggleTheme: () => void;
 }
 
+const NAV_LINKS = [
+  { id: 'home', label: 'Home', href: '#home' },
+  { id: 'about', label: 'About', href: '#about' },
+  { id: 'services', label: 'Services', href: '#services' },
+  { id: 'process', label: 'Process', href: '#process' },
+  { id: 'contact', label: 'Contact', href: '#contact' },
+];
+
 export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   onOpenAuthPortal,
@@ -20,30 +30,50 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleTheme,
 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
+  const [activeSection, setActiveSection] = useState('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  const { scrollYProgress } = useScroll();
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 220,
+    damping: 30,
+    restDelta: 0.001,
+  });
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
-    window.addEventListener('scroll', handleScroll);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const navLinks = [
-    { label: 'Home', href: '#home' },
-    { label: 'About', href: '#about' },
-    { label: 'Services', href: '#services' },
-    { label: 'Process', href: '#process' },
-    { label: 'Contact', href: '#contact' },
-  ];
+  // Scroll-spy for smooth active-section pill transitions
+  useEffect(() => {
+    const sectionIds = NAV_LINKS.map((l) => l.id);
+    const updateActiveFromScroll = () => {
+      const scrollMarker = window.scrollY + window.innerHeight * 0.32;
+      let current = 'home';
 
-  const handleLinkClick = (href: string) => {
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (el && el.offsetTop <= scrollMarker) {
+          current = id;
+        }
+      }
+      setActiveSection(current);
+    };
+
+    updateActiveFromScroll();
+    window.addEventListener('scroll', updateActiveFromScroll, { passive: true });
+    return () => window.removeEventListener('scroll', updateActiveFromScroll);
+  }, []);
+
+  const handleLinkClick = (href: string, id: string) => {
     setMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    setActiveSection(id);
+    scrollToSectionSmooth(href);
   };
 
   const isAdmin = isUserAdmin(currentUser);
@@ -64,7 +94,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             href="#home"
             onClick={(e) => {
               e.preventDefault();
-              handleLinkClick('#home');
+              handleLinkClick('#home', 'home');
             }}
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#710193] rounded-lg"
             aria-label="BluePeak Home"
@@ -72,21 +102,35 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Logo variant={!isScrolled ? 'light' : 'auto'} showTagline={false} />
           </a>
 
-          {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center gap-1 lg:gap-2 bg-white/70 dark:bg-[#16111D]/80 backdrop-blur-sm px-4 py-1.5 rounded-full border border-[#F3EAF7] dark:border-[#2E2338] shadow-xs">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLinkClick(link.href);
-                }}
-                className="px-3.5 py-1.5 text-sm font-medium text-[#706778] dark:text-[#A69CB0] hover:text-[#710193] dark:hover:text-white transition-colors rounded-full hover:bg-[#F3EAF7]/60 dark:hover:bg-[#251A30]"
-              >
-                {link.label}
-              </a>
-            ))}
+          {/* Desktop Nav Links with gliding layoutId highlight */}
+          <nav className="hidden md:flex items-center gap-1 lg:gap-1.5 bg-white/75 dark:bg-[#16111D]/85 backdrop-blur-md px-2.5 py-1.5 rounded-full border border-[#F3EAF7] dark:border-[#2E2338] shadow-xs">
+            {NAV_LINKS.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.label}
+                  href={link.href}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleLinkClick(link.href, link.id);
+                  }}
+                  className={`relative px-3.5 py-1.5 text-sm font-medium transition-colors duration-200 rounded-full ${
+                    isActive
+                      ? 'text-white'
+                      : 'text-[#706778] dark:text-[#A69CB0] hover:text-[#710193] dark:hover:text-white'
+                  }`}
+                >
+                  {isActive && (
+                    <motion.span
+                      layoutId="activeNavPill"
+                      transition={{ type: 'spring', stiffness: 360, damping: 32 }}
+                      className="absolute inset-0 rounded-full bg-[#710193] shadow-sm shadow-[#710193]/25 -z-0"
+                    />
+                  )}
+                  <span className="relative z-10">{link.label}</span>
+                </a>
+              );
+            })}
           </nav>
 
           {/* Right Action Buttons */}
@@ -192,39 +236,62 @@ export const Navbar: React.FC<NavbarProps> = ({
         </div>
       </div>
 
-      {/* Mobile Menu Dropdown */}
-      {mobileMenuOpen && (
-        <div className="sm:hidden bg-white dark:bg-[#120E18] border-b border-[#F3EAF7] dark:border-[#261D2E] shadow-xl px-5 pt-3 pb-6 animate-in slide-in-from-top-2 duration-200">
-          <nav className="flex flex-col gap-1 mb-5">
-            {navLinks.map((link) => (
-              <a
-                key={link.label}
-                href={link.href}
-                onClick={(e) => {
-                  e.preventDefault();
-                  handleLinkClick(link.href);
-                }}
-                className="px-4 py-2.5 text-base font-medium text-[#1D1722] dark:text-white hover:text-[#710193] dark:hover:text-[#C553ED] hover:bg-[#F3EAF7] dark:hover:bg-[#20172B] rounded-lg transition-colors"
-              >
-                {link.label}
-              </a>
-            ))}
-          </nav>
+      {/* Smooth scroll-progress hairline at the bottom edge of header */}
+      <motion.div
+        style={{ scaleX: smoothProgress, transformOrigin: 'left' }}
+        className={`absolute bottom-0 left-0 right-0 h-[2px] bg-gradient-to-r from-[#710193] via-[#C553ED] to-[#710193] transition-opacity duration-300 ${
+          isScrolled ? 'opacity-100' : 'opacity-0'
+        }`}
+      />
 
-          <div className="flex flex-col gap-2.5 pt-3 border-t border-gray-100 dark:border-[#261D2E]">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenContact();
-              }}
-              className="flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-white bg-[#710193] rounded-xl shadow-md shadow-[#710193]/20"
-            >
-              <span>Let's Talk</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      )}
+      {/* Mobile Menu Dropdown */}
+      <AnimatePresence>
+        {mobileMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.24, ease: EASE_OUT_EXPO }}
+            className="sm:hidden bg-white dark:bg-[#120E18] border-b border-[#F3EAF7] dark:border-[#261D2E] shadow-xl px-5 pt-3 pb-6"
+          >
+            <nav className="flex flex-col gap-1 mb-5">
+              {NAV_LINKS.map((link) => {
+                const isActive = activeSection === link.id;
+                return (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick(link.href, link.id);
+                    }}
+                    className={`px-4 py-2.5 text-base font-medium rounded-lg transition-colors ${
+                      isActive
+                        ? 'bg-[#710193] text-white'
+                        : 'text-[#1D1722] dark:text-white hover:text-[#710193] dark:hover:text-[#C553ED] hover:bg-[#F3EAF7] dark:hover:bg-[#20172B]'
+                    }`}
+                  >
+                    {link.label}
+                  </a>
+                );
+              })}
+            </nav>
+
+            <div className="flex flex-col gap-2.5 pt-3 border-t border-gray-100 dark:border-[#261D2E]">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  onOpenContact();
+                }}
+                className="flex items-center justify-center gap-2 w-full py-3 text-sm font-semibold text-white bg-[#710193] rounded-xl shadow-md shadow-[#710193]/20"
+              >
+                <span>Let's Talk</span>
+                <ArrowUpRight className="w-4 h-4" />
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </header>
   );
 };

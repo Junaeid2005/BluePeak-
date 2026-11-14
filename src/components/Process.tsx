@@ -5,9 +5,16 @@ import {
   PenTool,
   Terminal,
   Rocket,
-  GitBranch,
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { PROCESS_DATA } from '../data/agencyData';
+import {
+  EASE_OUT_EXPO,
+  VIEWPORT_CONFIG,
+  sectionHeaderVariants,
+  staggerContainerVariants,
+  cardItemVariants,
+} from './SectionTransition';
 
 export const Process: React.FC = () => {
   const getIcon = (iconName: string) => {
@@ -27,10 +34,19 @@ export const Process: React.FC = () => {
   };
 
   return (
-    <section id="process" className="py-24 bg-[#FAF8FC] dark:bg-[#0D0A11] relative transition-colors duration-300">
+    <section
+      id="process"
+      className="py-24 bg-[#FAF8FC] dark:bg-[#0D0A11] relative transition-colors duration-300"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <motion.div
+          variants={sectionHeaderVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_CONFIG}
+          className="max-w-3xl mx-auto text-center mb-16"
+        >
           <div className="text-xs font-semibold uppercase tracking-widest text-[#710193] dark:text-[#E2A6F7] mb-3">
             Workflow &bull; Five-Step Methodology
           </div>
@@ -42,19 +58,34 @@ export const Process: React.FC = () => {
             A structured, transparent five-step approach engineered to take your
             project from initial vision to measurable digital success.
           </p>
-        </div>
+        </motion.div>
 
         {/* Desktop Horizontal Process Timeline (hidden on mobile/tablet) */}
         <div className="hidden lg:block relative mb-12">
-          {/* Connecting line */}
-          <div className="absolute top-1/2 left-8 right-8 h-0.5 bg-[#F3EAF7] dark:bg-[#261D2E] -translate-y-12 z-0" />
+          {/* Animated Connecting Line */}
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={VIEWPORT_CONFIG}
+            transition={{ duration: 0.9, ease: EASE_OUT_EXPO, delay: 0.15 }}
+            style={{ transformOrigin: 'left' }}
+            className="absolute top-1/2 left-8 right-8 h-0.5 bg-gradient-to-r from-[#710193]/25 via-[#710193]/65 to-[#710193]/25 dark:from-[#9E24C7]/30 dark:via-[#C553ED]/65 dark:to-[#9E24C7]/30 -translate-y-12 z-0"
+          />
 
-          <div className="grid grid-cols-5 gap-4 relative z-10">
+          <motion.div
+            variants={staggerContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT_CONFIG}
+            className="grid grid-cols-5 gap-4 relative z-10"
+          >
             {PROCESS_DATA.map((step) => {
               const Icon = getIcon(step.iconName);
               return (
-                <div
+                <motion.div
                   key={step.step}
+                  variants={cardItemVariants}
+                  whileHover={{ y: -4, transition: { duration: 0.22, ease: EASE_OUT_EXPO } }}
                   className="group flex flex-col items-center text-center p-4"
                 >
                   {/* Step Number & Icon Circle */}
@@ -76,25 +107,42 @@ export const Process: React.FC = () => {
                     {step.description}
                   </p>
 
-                  <div className="p-3 bg-white dark:bg-[#16111D] rounded-xl border border-[#F3EAF7] dark:border-[#261D2E] text-[11px] text-[#706778] dark:text-[#A69CB0] leading-normal text-left">
+                  <div className="p-3 bg-white dark:bg-[#16111D] rounded-xl border border-[#F3EAF7] dark:border-[#261D2E] group-hover:border-[#710193]/30 dark:group-hover:border-[#9E24C7]/40 transition-colors text-[11px] text-[#706778] dark:text-[#A69CB0] leading-normal text-left">
                     {step.details}
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
 
         {/* Mobile & Tablet Vertical Timeline */}
         <div className="lg:hidden relative">
-          {/* Vertical line */}
-          <div className="absolute top-4 bottom-4 left-6 w-0.5 bg-[#F3EAF7] dark:bg-[#261D2E]" />
+          {/* Animated Vertical Line */}
+          <motion.div
+            initial={{ scaleY: 0 }}
+            whileInView={{ scaleY: 1 }}
+            viewport={VIEWPORT_CONFIG}
+            transition={{ duration: 0.85, ease: EASE_OUT_EXPO }}
+            style={{ transformOrigin: 'top' }}
+            className="absolute top-4 bottom-4 left-6 w-0.5 bg-gradient-to-b from-[#710193] via-[#C553ED]/50 to-[#F3EAF7] dark:to-[#261D2E]"
+          />
 
-          <div className="space-y-8 relative">
+          <motion.div
+            variants={staggerContainerVariants}
+            initial="hidden"
+            whileInView="visible"
+            viewport={VIEWPORT_CONFIG}
+            className="space-y-8 relative"
+          >
             {PROCESS_DATA.map((step) => {
               const Icon = getIcon(step.iconName);
               return (
-                <div key={step.step} className="flex items-start gap-4 sm:gap-6">
+                <motion.div
+                  key={step.step}
+                  variants={cardItemVariants}
+                  className="flex items-start gap-4 sm:gap-6"
+                >
                   {/* Step circle */}
                   <div className="relative shrink-0 z-10">
                     <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#16111D] border-2 border-[#710193] dark:border-[#9E24C7] flex items-center justify-center text-[#710193] dark:text-[#E2A6F7] shadow-sm">
@@ -122,10 +170,10 @@ export const Process: React.FC = () => {
                       {step.details}
                     </p>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

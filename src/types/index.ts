@@ -5,6 +5,8 @@ export interface ServiceItem {
   iconName: string;
   subServices: string[];
   tag: string;
+  imageUrl: string;
+  imageAlt: string;
 }
 
 export interface ProjectItem {

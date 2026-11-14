@@ -1,5 +1,13 @@
 import React from 'react';
 import { Target, Eye, Compass, Check } from 'lucide-react';
+import { motion } from 'motion/react';
+import {
+  EASE_OUT_EXPO,
+  VIEWPORT_CONFIG,
+  sectionHeaderVariants,
+  staggerContainerVariants,
+  cardItemVariants,
+} from './SectionTransition';
 
 export const About: React.FC = () => {
   const pillars = [
@@ -27,10 +35,19 @@ export const About: React.FC = () => {
   ];
 
   return (
-    <section id="about" className="py-24 bg-white dark:bg-[#0C0910] relative overflow-hidden transition-colors duration-300">
+    <section
+      id="about"
+      className="py-24 bg-white dark:bg-[#0C0910] relative overflow-hidden transition-colors duration-300"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <motion.div
+          variants={sectionHeaderVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_CONFIG}
+          className="max-w-3xl mx-auto text-center mb-16"
+        >
           <div className="text-xs font-semibold uppercase tracking-widest text-[#710193] dark:text-[#E2A6F7] mb-3">
             Company Background &bull; BluePeak
           </div>
@@ -53,15 +70,23 @@ export const About: React.FC = () => {
             help businesses connect with their audience and move forward with
             confidence.
           </p>
-        </div>
+        </motion.div>
 
         {/* Mission, Vision, Approach Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_CONFIG}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
           {pillars.map((pillar) => {
             const Icon = pillar.icon;
             return (
-              <div
+              <motion.div
                 key={pillar.title}
+                variants={cardItemVariants}
+                whileHover={{ y: -5, transition: { duration: 0.24, ease: EASE_OUT_EXPO } }}
                 className="group relative bg-[#FAF8FC] dark:bg-[#16111D] hover:bg-white dark:hover:bg-[#1D1627] rounded-2xl p-8 border border-[#F3EAF7] dark:border-[#261D2E] hover:border-[#710193]/30 dark:hover:border-[#9E24C7]/40 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 dark:hover:shadow-[#710193]/20 transition-all duration-300 flex flex-col justify-between"
               >
                 <div>
@@ -87,10 +112,10 @@ export const About: React.FC = () => {
                   <Check className="w-4 h-4 text-[#710193] dark:text-[#C553ED]" />
                   <span>Foundational Principle</span>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );

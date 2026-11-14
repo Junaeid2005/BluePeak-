@@ -1,4 +1,10 @@
 import type { ServiceItem, ProjectItem, WhyChooseItem, ProcessStep } from '../types';
+import webDevImg from '../assets/images/service_web_development_1794615251756.jpg';
+import maintenanceImg from '../assets/images/service_website_maintenance_1794615254157.jpg';
+import seoImg from '../assets/images/service_seo_analytics_1794615252064.jpg';
+import socialMediaImg from '../assets/images/service_social_media_1794615253463.jpg';
+import graphicDesignImg from '../assets/images/service_graphic_design_1794615253579.jpg';
+import digitalUxImg from '../assets/images/service_digital_ux_1794615252889.jpg';
 
 export const COMPANY_INFO = {
   name: 'BluePeak',
@@ -30,6 +36,8 @@ export const SERVICES_DATA: ServiceItem[] = [
     description:
       'We design and develop modern, responsive, and user-friendly websites that represent your brand and support your business goals.',
     iconName: 'Code',
+    imageUrl: webDevImg,
+    imageAlt: 'Modern web development interface showcased on a sleek laptop workspace',
     subServices: [
       'Business Websites',
       'Restaurant Websites',
@@ -45,6 +53,8 @@ export const SERVICES_DATA: ServiceItem[] = [
     description:
       'We help keep your website secure, updated, optimized, and running smoothly so you can focus on your business.',
     iconName: 'ShieldCheck',
+    imageUrl: maintenanceImg,
+    imageAlt: 'Website security monitoring, uptime telemetry, and performance maintenance',
     subServices: [
       'Website Updates',
       'Technical Support',
@@ -60,6 +70,8 @@ export const SERVICES_DATA: ServiceItem[] = [
     description:
       "We improve your website's search engine visibility through effective SEO strategies that help potential customers discover your business.",
     iconName: 'Search',
+    imageUrl: seoImg,
+    imageAlt: 'Search engine optimization analytics showing organic search ranking growth',
     subServices: [
       'On-page SEO',
       'Technical SEO',
@@ -75,6 +87,8 @@ export const SERVICES_DATA: ServiceItem[] = [
     description:
       'We help businesses strengthen their online presence and connect with their target audience through strategic social media marketing.',
     iconName: 'Share2',
+    imageUrl: socialMediaImg,
+    imageAlt: 'Strategic social media campaign planning and multi-platform engagement visuals',
     subServices: [
       'Social Media Management',
       'Content Planning',
@@ -90,6 +104,8 @@ export const SERVICES_DATA: ServiceItem[] = [
     description:
       'We create visually appealing designs that communicate your brand identity and make your business stand out.',
     iconName: 'Palette',
+    imageUrl: graphicDesignImg,
+    imageAlt: 'Creative studio desk featuring brand identity typography and color design',
     subServices: [
       'Social Media Graphics',
       'Promotional Designs',
@@ -105,6 +121,8 @@ export const SERVICES_DATA: ServiceItem[] = [
     description:
       'Complementary capabilities engineered to complete your digital ecosystem with seamless user journeys and brand cohesion.',
     iconName: 'Sparkles',
+    imageUrl: digitalUxImg,
+    imageAlt: 'UI/UX design wireframes, interactive prototyping, and digital brand systems',
     subServices: [
       'UI/UX Design',
       'Brand Identity Design',

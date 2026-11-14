@@ -6,9 +6,16 @@ import {
   MessageSquare,
   CheckCircle2,
   LifeBuoy,
-  Award,
 } from 'lucide-react';
+import { motion } from 'motion/react';
 import { WHY_CHOOSE_DATA } from '../data/agencyData';
+import {
+  EASE_OUT_EXPO,
+  VIEWPORT_CONFIG,
+  sectionHeaderVariants,
+  staggerContainerVariants,
+  cardItemVariants,
+} from './SectionTransition';
 
 export const WhyUs: React.FC = () => {
   const getIcon = (iconName: string) => {
@@ -33,7 +40,13 @@ export const WhyUs: React.FC = () => {
     <section className="py-24 bg-white dark:bg-[#0C0910] relative transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
-        <div className="max-w-3xl mx-auto text-center mb-16">
+        <motion.div
+          variants={sectionHeaderVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_CONFIG}
+          className="max-w-3xl mx-auto text-center mb-16"
+        >
           <div className="text-xs font-semibold uppercase tracking-widest text-[#710193] dark:text-[#E2A6F7] mb-3">
             The BluePeak Advantage &bull; Value Proposition
           </div>
@@ -45,15 +58,23 @@ export const WhyUs: React.FC = () => {
             We combine creativity, technology, and a business-focused approach
             to deliver digital solutions that matter.
           </p>
-        </div>
+        </motion.div>
 
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div
+          variants={staggerContainerVariants}
+          initial="hidden"
+          whileInView="visible"
+          viewport={VIEWPORT_CONFIG}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {WHY_CHOOSE_DATA.map((item) => {
             const Icon = getIcon(item.iconName);
             return (
-              <div
+              <motion.div
                 key={item.id}
+                variants={cardItemVariants}
+                whileHover={{ y: -5, transition: { duration: 0.24, ease: EASE_OUT_EXPO } }}
                 className="group relative bg-[#FAF8FC] dark:bg-[#16111D] hover:bg-white dark:hover:bg-[#1D1627] rounded-2xl p-8 border border-[#F3EAF7] dark:border-[#261D2E] hover:border-[#710193]/30 dark:hover:border-[#9E24C7]/40 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 dark:hover:shadow-[#710193]/15 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-6">
@@ -72,10 +93,10 @@ export const WhyUs: React.FC = () => {
                 <p className="text-sm sm:text-base text-[#706778] dark:text-[#A69CB0] leading-relaxed">
                   {item.description}
                 </p>
-              </div>
+              </motion.div>
             );
           })}
-        </div>
+        </motion.div>
       </div>
     </section>
   );
