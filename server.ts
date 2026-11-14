@@ -274,11 +274,15 @@ async function startServer() {
       });
 
       if (error) {
-        console.error('Resend API error:', error.message);
+        console.error('Resend API error:', error);
+        const safeDetail =
+          typeof error.message === 'string' && !error.message.includes('re_')
+            ? error.message
+            : 'Email provider rejected the request.';
         res.status(502).json({
           ok: false,
-          error:
-            'Unable to deliver your inquiry email right now. Please try again shortly.',
+          error: `Email delivery failed: ${safeDetail}`,
+          providerCode: error.name || 'resend_error',
         });
         return;
       }
