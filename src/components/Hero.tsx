@@ -15,21 +15,25 @@ export const Hero: React.FC<HeroProps> = ({
       id="home"
       className="relative min-h-[90vh] flex items-center pt-32 pb-20 overflow-hidden bg-[#0C0910] text-white transition-colors duration-300"
     >
-      {/* Full-Bleed Keyboard Background Image */}
+      {/* Full-Bleed Futuristic Digital Canvas Background Image */}
       <div className="absolute inset-0 pointer-events-none select-none overflow-hidden">
         <img
-          src="/assets/aistudio/image_ce3a8133.png"
-          alt="Sleek backlit keyboard representing precision digital craftsmanship at BluePeak"
-          className="w-full h-full object-cover object-center opacity-55 scale-[1.01]"
+          src="/assets/aistudio/image_3f3768db.png"
+          alt="Futuristic digital data horizon representing innovation and growth at BluePeak"
+          className="w-full h-full object-cover object-center opacity-70 scale-[1.01]"
           loading="eager"
           referrerPolicy="no-referrer"
         />
 
-        {/* Measured dark-violet gradient scrim for optimal readability & calm depth */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#0C0910]/80 via-[#140B1C]/65 to-[#0C0910]/95" />
-
-        {/* Subtle violet ambient glow */}
-        <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[780px] h-[420px] bg-[#710193]/25 rounded-full blur-3xl" />
+        {/* Measured dark-plum & obsidian scrim for strong text contrast while preserving artwork depth */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0E0915]/75 via-[#150D20]/65 to-[#0C0910]/92" />
+        <div
+          className="absolute inset-0"
+          style={{
+            background:
+              'radial-gradient(circle at 50% 38%, rgba(15, 9, 22, 0.55) 0%, rgba(12, 9, 16, 0.2) 65%)',
+          }}
+        />
       </div>
 
       <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 z-10 w-full">

@@ -105,34 +105,32 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Auth / Client Portal button */}
+            {/* Auth / Client Portal icon-only button */}
             <button
               onClick={onOpenAuthPortal}
-              className={`flex items-center gap-2 px-3.5 py-2 text-xs font-semibold rounded-full border transition-all ${
+              className={`p-2 rounded-full border transition-all shadow-xs ${
                 currentUser
                   ? 'bg-[#F3EAF7] dark:bg-[#291636] text-[#710193] dark:text-[#E2A6F7] border-[#710193]/30 dark:border-[#710193]/50 hover:bg-[#710193] hover:text-white'
                   : 'bg-white dark:bg-[#16111D] text-[#706778] dark:text-[#A69CB0] border-gray-200 dark:border-[#2E2338] hover:border-[#710193] dark:hover:border-[#9E24C7] hover:text-[#710193] dark:hover:text-white'
               }`}
-              title={currentUser ? `Signed in as ${currentUser.email}` : 'Client & Admin Portal'}
+              title={
+                currentUser
+                  ? `${isAdmin ? 'Admin Portal' : 'My Inquiries'} (${currentUser.email})`
+                  : 'Sign In'
+              }
+              aria-label={currentUser ? (isAdmin ? 'Admin Portal' : 'My Inquiries') : 'Sign In'}
             >
               {currentUser?.photoURL ? (
                 <img
                   src={currentUser.photoURL}
                   alt={currentUser.displayName || 'User'}
-                  className="w-5 h-5 rounded-full object-cover"
+                  className="w-4 h-4 rounded-full object-cover"
                 />
               ) : isAdmin ? (
                 <ShieldCheck className="w-4 h-4 text-[#710193] dark:text-[#C553ED]" />
               ) : (
-                <User className="w-4 h-4 text-[#706778] dark:text-[#A69CB0]" />
+                <User className="w-4 h-4" />
               )}
-              <span>
-                {currentUser
-                  ? isAdmin
-                    ? 'Admin Portal'
-                    : 'My Inquiries'
-                  : 'Client Portal'}
-              </span>
             </button>
 
             {/* Let's Talk CTA */}
@@ -157,10 +155,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={onOpenAuthPortal}
-              className="p-2 text-xs font-semibold text-[#710193] dark:text-[#C553ED] bg-[#F3EAF7] dark:bg-[#251633] rounded-full"
-              aria-label="User Portal"
+              className={`p-2 rounded-full border transition-all ${
+                currentUser
+                  ? 'bg-[#F3EAF7] dark:bg-[#291636] text-[#710193] dark:text-[#C553ED] border-[#710193]/30'
+                  : 'bg-white dark:bg-[#16111D] text-[#706778] dark:text-[#A69CB0] border-gray-200 dark:border-[#2E2338]'
+              }`}
+              aria-label={currentUser ? (isAdmin ? 'Admin Portal' : 'My Inquiries') : 'Sign In'}
+              title={currentUser ? `Signed in as ${currentUser.email}` : 'Sign In'}
             >
-              <User className="w-4 h-4" />
+              {currentUser?.photoURL ? (
+                <img
+                  src={currentUser.photoURL}
+                  alt={currentUser.displayName || 'User'}
+                  className="w-4 h-4 rounded-full object-cover"
+                />
+              ) : isAdmin ? (
+                <ShieldCheck className="w-4 h-4 text-[#710193] dark:text-[#C553ED]" />
+              ) : (
+                <User className="w-4 h-4" />
+              )}
             </button>
 
             <button
@@ -199,23 +212,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           </nav>
 
           <div className="flex flex-col gap-2.5 pt-3 border-t border-gray-100 dark:border-[#261D2E]">
-            <button
-              onClick={() => {
-                setMobileMenuOpen(false);
-                onOpenAuthPortal();
-              }}
-              className="flex items-center justify-center gap-2 w-full py-2.5 text-sm font-semibold text-[#710193] dark:text-[#E2A6F7] bg-[#F3EAF7] dark:bg-[#251633] rounded-xl hover:bg-[#710193] hover:text-white transition-colors"
-            >
-              <User className="w-4 h-4" />
-              <span>
-                {currentUser
-                  ? isAdmin
-                    ? 'Admin Portal'
-                    : 'My Inquiries'
-                  : 'Client / Admin Portal'}
-              </span>
-            </button>
-
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
