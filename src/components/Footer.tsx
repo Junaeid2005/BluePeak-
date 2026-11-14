@@ -23,6 +23,7 @@ export const Footer: React.FC<FooterProps> = ({
     { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
     { label: 'Services', href: '#services' },
+    { label: 'Our Work', href: '#portfolio' },
     { label: 'Process', href: '#process' },
     { label: 'Contact', href: '#contact' },
   ];

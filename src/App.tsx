@@ -4,6 +4,7 @@ import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Services } from './components/Services';
+import { Portfolio, type FeaturedClientProject } from './components/Portfolio';
 import { WhyUs } from './components/WhyUs';
 import { Process } from './components/Process';
 import { CtaSection } from './components/CtaSection';
@@ -11,6 +12,7 @@ import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { InquiriesModal } from './components/InquiriesModal';
 import { LegalModal } from './components/LegalModal';
+import { ProjectDetailsModal } from './components/ProjectDetailsModal';
 import { SectionBridge, scrollToSectionSmooth } from './components/SectionTransition';
 import {
   auth,
@@ -23,6 +25,7 @@ export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [authPortalOpen, setAuthPortalOpen] = useState(false);
   const [legalModalType, setLegalModalType] = useState<'privacy' | 'terms' | null>(null);
+  const [selectedProject, setSelectedProject] = useState<FeaturedClientProject | null>(null);
   const [contactInitialService, setContactInitialService] = useState<string>('Website Development');
 
   // Theme state: 'light' (white theme) or 'dark' (black theme)
@@ -30,7 +33,6 @@ export default function App() {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('bluepeak_theme');
       if (saved === 'dark' || saved === 'light') return saved;
-      // Default to light as specified in the brand identity, but respect prefers-color-scheme if user prefers
       if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
         return 'dark';
       }
@@ -111,12 +113,19 @@ export default function App() {
 
           <SectionBridge variant="seam-tint-to-light" />
 
-          {/* D. Why Choose BluePeak */}
-          <WhyUs />
+          {/* D. Portfolio Showcase (Featured Project: Rashoi Restaurant) */}
+          <Portfolio
+            onExploreProject={(project) => setSelectedProject(project)}
+          />
 
           <SectionBridge variant="seam-light-to-tint" />
 
-          {/* E. Working Process */}
+          {/* E. Why Choose BluePeak */}
+          <WhyUs />
+
+          <SectionBridge variant="seam-tint-to-light" />
+
+          {/* F. Working Process */}
           <Process />
 
           <SectionBridge variant="seam-to-cta" />
@@ -140,6 +149,16 @@ export default function App() {
           onOpenPrivacy={() => setLegalModalType('privacy')}
           onOpenTerms={() => setLegalModalType('terms')}
           onSelectService={(serviceTitle) => scrollToContact(serviceTitle)}
+        />
+
+        {/* Featured Project Details Modal */}
+        <ProjectDetailsModal
+          project={selectedProject}
+          onClose={() => setSelectedProject(null)}
+          onStartProject={() => {
+            setSelectedProject(null);
+            setTimeout(() => scrollToContact('Website Development'), 180);
+          }}
         />
 
         {/* Client & Admin Inquiries Portal Modal (Firebase Auth & Firestore) */}

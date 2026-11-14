@@ -37,7 +37,7 @@ export const WhyUs: React.FC = () => {
   };
 
   return (
-    <section className="py-24 bg-white dark:bg-[#0C0910] relative transition-colors duration-300">
+    <section className="py-24 bg-[#FAF8FC] dark:bg-[#0D0A11] relative transition-colors duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <motion.div
@@ -75,10 +75,10 @@ export const WhyUs: React.FC = () => {
                 key={item.id}
                 variants={cardItemVariants}
                 whileHover={{ y: -5, transition: { duration: 0.24, ease: EASE_OUT_EXPO } }}
-                className="group relative bg-[#FAF8FC] dark:bg-[#16111D] hover:bg-white dark:hover:bg-[#1D1627] rounded-2xl p-8 border border-[#F3EAF7] dark:border-[#261D2E] hover:border-[#710193]/30 dark:hover:border-[#9E24C7]/40 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 dark:hover:shadow-[#710193]/15 transition-all duration-300"
+                className="group relative bg-white dark:bg-[#16111D] rounded-2xl p-8 border border-[#F3EAF7] dark:border-[#261D2E] hover:border-[#710193]/30 dark:hover:border-[#9E24C7]/40 shadow-xs hover:shadow-xl hover:shadow-[#710193]/5 dark:hover:shadow-[#710193]/15 transition-all duration-300"
               >
                 <div className="flex items-center justify-between mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-white dark:bg-[#20172B] border border-[#F3EAF7] dark:border-[#2E2338] flex items-center justify-center text-[#710193] dark:text-[#E2A6F7] group-hover:bg-[#710193] group-hover:text-white transition-all duration-300 shadow-xs">
+                  <div className="w-12 h-12 rounded-xl bg-[#FAF8FC] dark:bg-[#20172B] border border-[#F3EAF7] dark:border-[#2E2338] flex items-center justify-center text-[#710193] dark:text-[#E2A6F7] group-hover:bg-[#710193] group-hover:text-white transition-all duration-300 shadow-xs">
                     <Icon className="w-6 h-6" />
                   </div>
                   <span className="text-xs font-bold font-mono text-[#710193]/60 dark:text-[#E2A6F7]/60">

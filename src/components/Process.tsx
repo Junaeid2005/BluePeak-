@@ -36,7 +36,7 @@ export const Process: React.FC = () => {
   return (
     <section
       id="process"
-      className="py-24 bg-[#FAF8FC] dark:bg-[#0D0A11] relative transition-colors duration-300"
+      className="py-24 bg-white dark:bg-[#0C0910] relative transition-colors duration-300"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
@@ -107,7 +107,7 @@ export const Process: React.FC = () => {
                     {step.description}
                   </p>
 
-                  <div className="p-3 bg-white dark:bg-[#16111D] rounded-xl border border-[#F3EAF7] dark:border-[#261D2E] group-hover:border-[#710193]/30 dark:group-hover:border-[#9E24C7]/40 transition-colors text-[11px] text-[#706778] dark:text-[#A69CB0] leading-normal text-left">
+                  <div className="p-3 bg-[#FAF8FC] dark:bg-[#16111D] rounded-xl border border-[#F3EAF7] dark:border-[#261D2E] group-hover:border-[#710193]/30 dark:group-hover:border-[#9E24C7]/40 transition-colors text-[11px] text-[#706778] dark:text-[#A69CB0] leading-normal text-left">
                     {step.details}
                   </div>
                 </motion.div>
@@ -154,7 +154,7 @@ export const Process: React.FC = () => {
                   </div>
 
                   {/* Content card */}
-                  <div className="flex-1 bg-white dark:bg-[#16111D] p-5 sm:p-6 rounded-2xl border border-[#F3EAF7] dark:border-[#261D2E]">
+                  <div className="flex-1 bg-[#FAF8FC] dark:bg-[#16111D] p-5 sm:p-6 rounded-2xl border border-[#F3EAF7] dark:border-[#261D2E]">
                     <div className="flex items-center justify-between mb-1">
                       <h3 className="text-lg font-heading font-bold text-[#1D1722] dark:text-white">
                         {step.title}

@@ -82,7 +82,7 @@ export const SectionBridge: React.FC<SectionBridgeProps> = ({ variant = 'seam-li
       <div
         ref={ref}
         aria-hidden="true"
-        className="relative h-10 bg-gradient-to-b from-[#FAF8FC] to-[#710193]/15 dark:from-[#0D0A11] dark:to-[#4B0065]/30 overflow-hidden"
+        className="relative h-10 bg-gradient-to-b from-white to-[#710193]/15 dark:from-[#0C0910] dark:to-[#4B0065]/30 overflow-hidden"
       >
         <motion.div
           style={{ scaleX: lineScaleX, opacity: glowOpacity }}
