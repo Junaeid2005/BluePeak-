@@ -50,7 +50,7 @@ export const Logo: React.FC<LogoProps> = ({
           >
             Blue
           </span>
-          <span className="text-[#710193] dark:text-[#C553ED]">
+          <span className={isLight ? 'text-[#D57CF7]' : 'text-[#710193] dark:text-[#C553ED]'}>
             Peak
           </span>
         </div>

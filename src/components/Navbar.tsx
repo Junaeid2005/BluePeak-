@@ -34,7 +34,6 @@ export const Navbar: React.FC<NavbarProps> = ({
     { label: 'Home', href: '#home' },
     { label: 'About', href: '#about' },
     { label: 'Services', href: '#services' },
-    { label: 'Our Work', href: '#portfolio' },
     { label: 'Process', href: '#process' },
     { label: 'Contact', href: '#contact' },
   ];
@@ -70,7 +69,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             className="focus:outline-none focus-visible:ring-2 focus-visible:ring-[#710193] rounded-lg"
             aria-label="BluePeak Home"
           >
-            <Logo showTagline={false} />
+            <Logo variant={!isScrolled ? 'light' : 'auto'} showTagline={false} />
           </a>
 
           {/* Desktop Nav Links */}
@@ -166,7 +165,11 @@ export const Navbar: React.FC<NavbarProps> = ({
 
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-xl text-[#1D1722] dark:text-white hover:bg-[#F3EAF7] dark:hover:bg-[#251A30] transition-colors focus:outline-none focus:ring-2 focus:ring-[#710193]"
+              className={`p-2 rounded-xl transition-colors focus:outline-none focus:ring-2 focus:ring-[#710193] ${
+                isScrolled
+                  ? 'text-[#1D1722] dark:text-white hover:bg-[#F3EAF7] dark:hover:bg-[#251A30]'
+                  : 'text-white hover:bg-white/15'
+              }`}
               aria-label="Toggle navigation menu"
               aria-expanded={mobileMenuOpen}
             >

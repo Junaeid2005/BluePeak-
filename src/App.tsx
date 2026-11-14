@@ -4,13 +4,11 @@ import { Hero } from './components/Hero';
 import { About } from './components/About';
 import { Services } from './components/Services';
 import { WhyUs } from './components/WhyUs';
-import { Portfolio } from './components/Portfolio';
 import { Process } from './components/Process';
 import { CtaSection } from './components/CtaSection';
 import { Contact } from './components/Contact';
 import { Footer } from './components/Footer';
 import { InquiriesModal } from './components/InquiriesModal';
-import { ProjectModal } from './components/ProjectModal';
 import { LegalModal } from './components/LegalModal';
 import {
   auth,
@@ -18,12 +16,10 @@ import {
   testFirestoreConnection,
 } from './lib/firebase';
 import type { User } from 'firebase/auth';
-import type { ProjectItem } from './types';
 
 export default function App() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [authPortalOpen, setAuthPortalOpen] = useState(false);
-  const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(null);
   const [legalModalType, setLegalModalType] = useState<'privacy' | 'terms' | null>(null);
   const [contactInitialService, setContactInitialService] = useState<string>('Website Development');
 
@@ -115,12 +111,7 @@ export default function App() {
         {/* D. Why Choose BluePeak */}
         <WhyUs />
 
-        {/* E. Selected Projects / Portfolio */}
-        <Portfolio
-          onOpenProjectModal={(project) => setSelectedProject(project)}
-        />
-
-        {/* F. Working Process */}
+        {/* E. Working Process */}
         <Process />
 
         {/* G. Call To Action Banner */}
@@ -147,13 +138,6 @@ export default function App() {
         isOpen={authPortalOpen}
         onClose={() => setAuthPortalOpen(false)}
         currentUser={currentUser}
-      />
-
-      {/* Case Study Details Modal */}
-      <ProjectModal
-        project={selectedProject}
-        onClose={() => setSelectedProject(null)}
-        onInquireSimilar={(category) => scrollToContact(category)}
       />
 
       {/* Privacy Policy / Terms Modal */}
